@@ -1,10 +1,11 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import customMessage from 'src/shared/responses/customMessage.response';
+import { SerializedUser } from './types/serializedUser';
 
 @Injectable()
 export class UsersService {
@@ -48,9 +49,7 @@ export class UsersService {
 
         try {
             const user = this.userRepository.save(newUser)
-            if (user) {
-                return customMessage(HttpStatus.OK, 'Conta criada com sucesso', {})
-            }
+            return customMessage(HttpStatus.OK, 'Conta criada com sucesso', {})
         } catch (err) {
             throw new InternalServerErrorException(
                 customMessage(HttpStatus.INTERNAL_SERVER_ERROR, 'Um erro foi encontrado! Tente mais tarde, por favor', {})
@@ -58,29 +57,121 @@ export class UsersService {
         }
     }
 
-    async findUserById(id: string): Promise<Users> {
-        const user = await this.userRepository.findOneBy({ id });
-        return user;
+    async findUserById(id: string): Promise<object> {
+        const user: Users = await this.getUserById(id);
+
+        try {
+            return customMessage(
+                HttpStatus.OK,
+                `Usuário do ID: ${id}`,
+                new SerializedUser(user)
+            )
+        } catch (err) {
+            Logger.error('Erro encontrado: ', err)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
     }
 
-    async findAll(): Promise<Array<Users>> {
-        const result = await this.userRepository.find();
-        return result;
+    async findAll(): Promise<object> {
+
+        try {
+            const users: Array<Users> = await this.userRepository.find();
+            return customMessage(
+                HttpStatus.OK,
+                'Lista de todos os usuários',
+                users.map((user) => new SerializedUser(user))
+            )
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
     }
 
     async updateUser(id: string, updateUserDto: UpdateUserDto) {
-        const userUpdated = await this.userRepository.update(id, updateUserDto);
-        return userUpdated;
+        await this.getUserById(id);
+        try {
+            await this.userRepository.update(id, updateUserDto);
+            return customMessage(HttpStatus.OK, 'Usuário atualizado com sucesso', {})
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
     }
 
     async softDeleteUser(id: string) {
-        const result = await this.userRepository.softDelete(id);
-        return result;
+        await this.getUserById(id);
+        try {
+            await this.userRepository.softDelete(id);
+            return customMessage(HttpStatus.OK, 'Usuário deletado com sucesso', {})
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
     }
 
     async restoreUser(id: string) {
-        const result = await this.userRepository.restore(id);
-        return result
+        await this.getUserById(id);
+
+        try {
+            await this.userRepository.restore(id);
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+    }
+
+    async getUserById(id: string) {
+        var user: Users = new Users()
+        try {
+            user = await this.userRepository.findOneBy({ id })
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+
+        if (!user) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Usuário específicado não existe.", {})
+            )
+        }
+
+        return user;
     }
 
     async findDeletedByEmail(email: string) {
