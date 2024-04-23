@@ -13,35 +13,31 @@ export class UsersController {
 
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto){
-        await this.usersService.createUser(createUserDto);
+       return await this.usersService.createUser(createUserDto);
     }
 
     @Get()
-    async findAll(): Promise<Array<Users>>{
-        const users = await this.usersService.findAll();
-        return users;
+    async findAll(){
+        return await this.usersService.findAll();
     }
 
     @Get(':id')
-    async findById(@Param('id') id: string):Promise<Users>{
-        const userById = await this.usersService.findUserById(id);
-        return userById;
+    async findById(@Param('id') id: string){
+        return await this.usersService.findUserById(id);
     }
 
     @Patch(':id')
     async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto){
-        const result = await this.usersService.updateUser(id, updateUserDto);
-        return result;
+        return await this.usersService.updateUser(id, updateUserDto);
     }
 
     @Delete(':id')
     async deleteUser(@Param('id') id:string){
-        const result = await this.usersService.softDeleteUser(id);
-        return result;
+        return await this.usersService.softDeleteUser(id);
     }
 
     @Patch('recover/:id')
     async restoreUser(@Param('id') id:string){
-        const result = await this.usersService.restoreUser(id);
+       return await this.usersService.restoreUser(id);
     }
 }
