@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { SerializedUser } from './types/serializedUser';
+import { encodePassword } from 'src/shared/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -32,19 +33,21 @@ export class UsersService {
         }
 
         //checking if e-mail already exists
-        if ((await this.findByEmail(userEmail)).length != 0) {
+        if (await this.findByEmail(userEmail)) {
             throw new ConflictException(
                 customMessage(HttpStatus.CONFLICT, 'Este email já está em uso', {})
             );
         }
         //checking if CPF already exists
-        if ((await this.findByCPF(userCPF)).length != 0) {
+        if (await this.findByCPF(userCPF)) {
             throw new ConflictException(
                 customMessage(HttpStatus.CONFLICT, 'Este CPF já está em uso', {})
             );
         }
+        //enconde password
+        const password = encodePassword(createUserDto.password);
 
-        const newUser = this.userRepository.create({ ...createUserDto });
+        const newUser = this.userRepository.create({ ...createUserDto, password });
 
 
         try {
@@ -155,10 +158,10 @@ export class UsersService {
     }
 
     async findByEmail(email: string) {
-        return await this.userRepository.findBy({ email });
+        return await this.userRepository.findOneBy({ email });
     }
 
     async findByCPF(cpf: string) {
-        return await this.userRepository.findBy({ cpf });
+        return await this.userRepository.findOneBy({ cpf });
     }
 }
