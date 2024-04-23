@@ -1,9 +1,10 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { Users } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpExceptionFilter } from 'src/shared/filters/http-exception.filter';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -25,11 +26,13 @@ export class UsersController {
         return await this.usersService.findAll();
     }
 
+    @UseGuards(AuthGuard)
     @Get(':id')
     async findById(@Param('id') id: string){
         return await this.usersService.findUserById(id);
     }
 
+    @UseGuards(AuthGuard)
     @Patch(':id')
     async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto){
         return await this.usersService.updateUser(id, updateUserDto);

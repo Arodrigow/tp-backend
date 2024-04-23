@@ -161,7 +161,27 @@ export class UsersService {
         return await this.userRepository.findOneBy({ email });
     }
 
-    async findByCPF(cpf: string) {
-        return await this.userRepository.findOneBy({ cpf });
+    async findByCPF(cpf: string) {        
+        var user: Users = new Users()
+        try {
+            user = await this.userRepository.findOneBy({ cpf })
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+
+        if (!user) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Usuário específicado não existe.", {})
+            )
+        }
+
+        return user;
     }
 }
