@@ -5,6 +5,7 @@ export class SerializedUser {
     id: string;
     name: string;
     cpf:string;
+    email:string;
     phone_number:string;
 
     @Exclude()
