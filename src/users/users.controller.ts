@@ -32,13 +32,4 @@ export class UsersController {
         return await this.usersService.updateUser(id, updateUserDto);
     }
 
-    @Delete(':id')
-    async deleteUser(@Param('id') id:string){
-        return await this.usersService.softDeleteUser(id);
-    }
-
-    @Patch('recover/:id')
-    async restoreUser(@Param('id') id:string){
-       return await this.usersService.restoreUser(id);
-    }
 }

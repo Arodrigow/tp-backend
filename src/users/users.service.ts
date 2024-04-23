@@ -115,41 +115,7 @@ export class UsersService {
             )
         }
     }
-
-    async softDeleteUser(id: string) {
-        await this.getUserById(id);
-        try {
-            await this.userRepository.softDelete(id);
-            return customMessage(HttpStatus.OK, 'Usuário deletado com sucesso', {})
-        } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
-        }
-    }
-
-    async restoreUser(id: string) {
-        await this.getUserById(id);
-
-        try {
-            await this.userRepository.restore(id);
-        } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
-        }
-    }
-
+    
     async getUserById(id: string) {
         var user: Users = new Users()
         try {
