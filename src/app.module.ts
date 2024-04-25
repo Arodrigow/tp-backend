@@ -4,10 +4,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { WellsModule } from './wells/wells.module';
 
 @Module({
   imports: [
     UsersModule,
+    WellsModule,
     TypeOrmModule.forRoot({
       type:'postgres',
       host: process.env.DB_HOST,
@@ -19,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: false,
       migrationsTableName: 'typeorm_migrations',
       migrationsRun: false,
+      autoLoadEntities: true
     }),
     AuthModule
   ],

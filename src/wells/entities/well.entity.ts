@@ -1,28 +1,19 @@
-import { Wells } from "src/wells/entities/well.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Users } from "src/users/entities/user.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import {v4 as uuidv4} from 'uuid'
 
 @Entity()
-export class Users{
+export class Wells {
 
     @PrimaryGeneratedColumn('uuid')
     id: string = uuidv4();
 
     @Column()
-    name:string
+    userId: string;
 
-    @Column({unique:true})
-    cpf: string;
+    @Column({default:false})
+    hasActiveUser: boolean
 
-    @Column()
-    password:string;
-
-    @Column({unique:true})
-    email:string;
-
-    @Column()
-    phone_number:string;
-    
     @CreateDateColumn({
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP(6)',

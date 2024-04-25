@@ -1,11 +1,11 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
-export class Users1713819429819 implements MigrationInterface {
+export class Wells1713965202038 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
         await queryRunner.createTable(new Table({
-            name: 'users',
+            name: 'wells',
             columns: [
                 {
                     name: 'id',
@@ -16,27 +16,14 @@ export class Users1713819429819 implements MigrationInterface {
                     generationStrategy: 'uuid',
                 },
                 {
-                    name: 'name',
-                    type: 'varchar'
+                    name: 'userId',
+                    type: 'uuid',
+                    isNullable: true
                 },
                 {
-                    name: 'cpf',
-                    type: 'varchar',
-                    isUnique: true
-                },
-                {
-                    name: 'password',
-                    type: 'varchar',
-
-                },
-                {
-                    name: 'email',
-                    type: 'varchar',
-                    isUnique: true
-                },
-                {
-                    name: 'phone_number',
-                    type: 'varchar'
+                    name: 'hasActiveUser',
+                    type: 'boolean',
+                    default: false
                 },
                 {
                     name: 'createdAt',
@@ -54,14 +41,14 @@ export class Users1713819429819 implements MigrationInterface {
                     type: 'timestamp',
                     isNullable: true
                 },
-            ],
+            ]
         }),
             true
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('users');
+        await queryRunner.dropTable('wells')
     }
 
 }
