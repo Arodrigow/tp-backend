@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { WellsModule } from './wells/wells.module';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { WellsModule } from './wells/wells.module';
       migrationsRun: false,
       autoLoadEntities: true
     }),
-    AuthModule
+    AuthModule,
+    MonitoringModule,
   ],
   controllers: [AppController],
   providers: [AppService],
