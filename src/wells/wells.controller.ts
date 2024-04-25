@@ -25,4 +25,9 @@ export class WellsController {
     async findWllById(@Param('id') id:string){
         return await this.wellService.findWellById(id);
     }
+
+    @Get('user/:userId')
+    async listWellsByUser(@Param('userId') userId: string){
+        return await this.wellService.listWellsByUser(userId);
+    }
 }

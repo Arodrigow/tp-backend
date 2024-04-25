@@ -69,7 +69,7 @@ export class WellsService {
                     'Um erro foi encontrado! Tente mais tarde, por favor',
                     {}
                 )
-            )            
+            )
         }
     }
 
@@ -96,5 +96,25 @@ export class WellsService {
         }
 
         return well;
+    }
+
+
+    async listWellsByUser(userId: string) {
+        const user = await this.userService.getUserById(userId);
+
+        try {
+            const userWells: Array<Wells> = await this.wellRepository.find({ where: [{ userId: user.id }] });
+            return customMessage(HttpStatus.OK, ("Poços do proprietário: " + userId), userWells)
+
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
     }
 }
