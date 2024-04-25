@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('wells')
 export class WellsController {
 
@@ -16,7 +17,7 @@ export class WellsController {
 
     @Get()
     async findAll(){
-
+        return await this.wellService.findAllWells();
     }
 
     @Get(':id')
