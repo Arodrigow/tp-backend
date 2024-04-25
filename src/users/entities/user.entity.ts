@@ -1,5 +1,4 @@
-import { Wells } from "src/wells/entities/well.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import {v4 as uuidv4} from 'uuid'
 
 @Entity()
@@ -22,7 +21,7 @@ export class Users{
 
     @Column()
     phone_number:string;
-    
+
     @CreateDateColumn({
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP(6)',
