@@ -16,6 +16,11 @@ export class Wells1713965202038 implements MigrationInterface {
                     generationStrategy: 'uuid',
                 },
                 {
+                    name:'ordinance',
+                    type:'varchar',
+                    isNullable: false
+                },
+                {
                     name: 'userId',
                     type: 'uuid',
                     isNullable: true

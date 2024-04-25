@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wells } from './entities/well.entity';
 import { Repository } from 'typeorm';
@@ -15,20 +15,50 @@ export class WellsService {
         private readonly userService: UsersService
     ) { }
 
-    async createWell({ userId }: CreateWellDto) {
+    async createWell({ ordinance, userId }: CreateWellDto) {
 
-        if (!userId) {
-            const newWell = this.wellRepository.create();
-            await this.wellRepository.save(newWell);
-
-            return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
+        if (await this.getOneByOrdinance(ordinance)) {
+            throw new ConflictException(
+                customMessage(HttpStatus.CONFLICT, 'Já existe um poço com esta portaria.', {})
+            );
         }
 
-        const user = await this.userService.getUserById(userId);
-        const newWell = this.wellRepository.create({ userId: user.id, hasActiveUser: true });
+        if (!userId) {
+            try {
+                const newWell = this.wellRepository.create({ ordinance });
+                await this.wellRepository.save(newWell);
 
-        await this.wellRepository.save(newWell);
-        return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
+                return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
+            } catch (error) {
+                Logger.error('Erro encontrado', error);
+                throw new InternalServerErrorException(
+                    customMessage(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        'Um erro foi encontrado! Tente mais tarde, por favor',
+                        {}
+                    )
+                )
+            }
+        }
+
+        try {
+            const user = await this.userService.getUserById(userId);
+            const newWell = this.wellRepository.create({ ordinance, userId: user.id, hasActiveUser: true });
+
+            await this.wellRepository.save(newWell);
+            return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
+
+        } catch (error) {
+            Logger.error('Erro encontrado', error);
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+
+        }
     }
 
     async findAllWells() {
@@ -106,8 +136,8 @@ export class WellsService {
         try {
             const userWells: Array<Wells> = await this.wellRepository.find({ where: [{ userId: user.id }] });
             return customMessage(
-                HttpStatus.OK, 
-                ("Poços do proprietário: " + userId), 
+                HttpStatus.OK,
+                ("Poços do proprietário: " + userId),
                 userWells.map((well) => new SerializedWell(well)))
 
         } catch (error) {
@@ -135,6 +165,21 @@ export class WellsService {
         try {
             await this.wellRepository.update(id, updateUserOwnershipDto);
             return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+    }
+
+    async getOneByOrdinance(ordinance: string) {
+        try {
+            return await this.wellRepository.findOneBy({ ordinance });
         } catch (error) {
             Logger.error('Erro encontrado: ', error)
             throw new InternalServerErrorException(

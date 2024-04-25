@@ -11,6 +11,9 @@ export class Wells {
     @Column()
     userId: string;
 
+    @Column()
+    ordinance: string;
+
     @Column({default:false})
     hasActiveUser: boolean
 
