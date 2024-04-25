@@ -3,6 +3,7 @@ import { Exclude } from "class-transformer";
 export class SerializedWell{
 
     id: string;
+    ordinance: string;
     hasActiveUser: boolean;
     updatedAt: Date;
 

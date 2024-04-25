@@ -81,7 +81,6 @@ export class WellsService {
         }
     }
 
-
     async findWellById(id: string) {
 
         const well = await this.getOneWell(id);
@@ -188,6 +187,25 @@ export class WellsService {
                     'Um erro foi encontrado! Tente mais tarde, por favor',
                     {}
                 )
+            )
+        }
+    }
+
+    async findWellByOrdinance(ordinance: string) {
+        const well = await this.getOneByOrdinance(ordinance);
+
+        if (!well.hasActiveUser) {
+            return customMessage(
+                HttpStatus.OK,
+                'Poço com portaria nº: ' + ordinance,
+                new SerializedWell(well)
+            )
+        }
+        if (well.hasActiveUser) {
+            return customMessage(
+                HttpStatus.OK,
+                'Poço com portaria nº: ' + ordinance + " já possui responsável cadastrado.",
+                {}
             )
         }
     }
