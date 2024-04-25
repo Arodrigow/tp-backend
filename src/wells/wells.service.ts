@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wells } from './entities/well.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { CreateWellDto } from './dto/create-well.dto';
 import { UsersService } from 'src/users/users.service';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { SerializedWell } from './types/serializedWell';
+import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
 
 @Injectable()
 export class WellsService {
@@ -104,8 +105,36 @@ export class WellsService {
 
         try {
             const userWells: Array<Wells> = await this.wellRepository.find({ where: [{ userId: user.id }] });
-            return customMessage(HttpStatus.OK, ("Poços do proprietário: " + userId), userWells)
+            return customMessage(
+                HttpStatus.OK, 
+                ("Poços do proprietário: " + userId), 
+                userWells.map((well) => new SerializedWell(well)))
 
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+    }
+
+
+    async updateUserOwnership(id: string, updateUserOwnershipDto: UpdateUserOwnershipDto) {
+
+        const well = await this.getOneWell(id);
+        if (well.hasActiveUser) {
+            throw new BadRequestException(customMessage(
+                HttpStatus.BAD_REQUEST, 'Este poço já possui proprietário', {}
+            ))
+        }
+
+        try {
+            await this.wellRepository.update(id, updateUserOwnershipDto);
+            return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
         } catch (error) {
             Logger.error('Erro encontrado: ', error)
             throw new InternalServerErrorException(
