@@ -20,8 +20,9 @@ export class WellsController {
         return await this.wellService.findAllWells();
     }
 
+
     @Get(':id')
     async findWllById(@Param('id') id:string){
-        
+        return await this.wellService.findWellById(id);
     }
 }

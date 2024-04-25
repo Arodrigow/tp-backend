@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wells } from './entities/well.entity';
 import { Repository } from 'typeorm';
@@ -16,18 +16,18 @@ export class WellsService {
 
     async createWell({ userId }: CreateWellDto) {
 
-        if(!userId){
+        if (!userId) {
             const newWell = this.wellRepository.create();
             await this.wellRepository.save(newWell);
 
             return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
         }
 
-            const user = await this.userService.getUserById(userId);
-            const newWell = this.wellRepository.create({userId: user.id, hasActiveUser: true});
+        const user = await this.userService.getUserById(userId);
+        const newWell = this.wellRepository.create({ userId: user.id, hasActiveUser: true });
 
-            await this.wellRepository.save(newWell);
-            return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
+        await this.wellRepository.save(newWell);
+        return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
     }
 
     async findAllWells() {
@@ -48,5 +48,53 @@ export class WellsService {
                 )
             )
         }
+    }
+
+
+    async findWellById(id: string) {
+
+        const well = await this.getOneWell(id);
+
+        try {
+            return customMessage(
+                HttpStatus.OK,
+                `Poço ${id}`,
+                new SerializedWell(well)
+            )
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )            
+        }
+    }
+
+    async getOneWell(id: string) {
+        var well: Wells = new Wells();
+
+        try {
+            well = await this.wellRepository.findOneBy({ id })
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+
+        if (!well) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
+            )
+        }
+
+        return well;
     }
 }

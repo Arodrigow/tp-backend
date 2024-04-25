@@ -53,7 +53,7 @@ export class UsersService {
         try {
             const user = this.userRepository.save(newUser)
             return customMessage(HttpStatus.OK, 'Conta criada com sucesso', {})
-        } catch (err) {
+        } catch (error) {
             throw new InternalServerErrorException(
                 customMessage(HttpStatus.INTERNAL_SERVER_ERROR, 'Um erro foi encontrado! Tente mais tarde, por favor', {})
             )
@@ -69,8 +69,8 @@ export class UsersService {
                 `Usuário do ID: ${id}`,
                 new SerializedUser(user)
             )
-        } catch (err) {
-            Logger.error('Erro encontrado: ', err)
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
             throw new InternalServerErrorException(
                 customMessage(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -136,7 +136,7 @@ export class UsersService {
 
         if (!user) {
             throw new NotFoundException(
-                customMessage(HttpStatus.NOT_FOUND, "Usuário específicado não existe.", {})
+                customMessage(HttpStatus.NOT_FOUND, "Usuário especificado não existe.", {})
             )
         }
 
