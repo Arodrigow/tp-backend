@@ -1,4 +1,93 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Monitoring } from './entities/monitoring.entity';
+import { Repository } from 'typeorm';
+import { WellsService } from 'src/wells/wells.service';
+import { CreateMonitoringDto } from './dto/create-monitoring.dto';
+import customMessage from 'src/shared/responses/customMessage.response';
+import { UpdateMonitoringDto } from './dto/update-monitoring.dto';
 
 @Injectable()
-export class MonitoringService {}
+export class MonitoringService {
+    constructor(
+        @InjectRepository(Monitoring) private readonly monitRepository: Repository<Monitoring>,
+        private readonly wellService: WellsService
+    ) { }
+
+    async createEntry(wellId, { flow, level, pumpTime, date }: CreateMonitoringDto) {
+        const well = await this.wellService.getOneWell(wellId);
+
+        try {
+            const newEntry = new Monitoring();
+            newEntry.flow = flow;
+            newEntry.level = level;
+            newEntry.pumpTime = pumpTime;
+            newEntry.date = date;
+            newEntry.well = well;
+            await this.monitRepository.save(newEntry);
+
+        } catch (error) {
+            Logger.error('Erro encontrado', error);
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+    }
+
+    async updateEntry(wellId: string, id: number, updateMonitoringDto: UpdateMonitoringDto) {
+        const entry = await this.findOneEntryById(id);
+
+        if (entry.well.id != wellId) {
+            throw new ForbiddenException(
+                customMessage(HttpStatus.FORBIDDEN, "Entrada especificada não pertence a este poço!", {})
+            )            
+        }
+
+        try {
+            await this.monitRepository.update(id, updateMonitoringDto);
+            return customMessage(
+                HttpStatus.OK,
+                'Atualização da entrada realizada com sucesso',
+                {}
+            )
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+    }
+
+    private async findOneEntryById(id: number) {
+        var entry = new Monitoring();
+        try {
+            entry = await this.monitRepository.findOneBy({ id });
+
+        } catch (error) {
+            Logger.error('Erro encontrado: ', error)
+            throw new InternalServerErrorException(
+                customMessage(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    'Um erro foi encontrado! Tente mais tarde, por favor',
+                    {}
+                )
+            )
+        }
+        
+        if (!entry) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Entrada especificada não existe!", {})
+            )
+        }
+
+        return entry;
+    }
+}
