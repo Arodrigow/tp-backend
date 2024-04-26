@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, UnauthorizedException} from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { comparePasswords } from 'src/shared/utils/bcrypt';
@@ -13,7 +13,13 @@ export class AuthService {
     ){}
 
     async signIn(cpf: string, password: string):Promise<any>{
-        const user = await this.userService.findByCPF(cpf);
+        const user = await this.userService.findByCPF(cpf);        
+
+        if (!user) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Usuário específicado não existe.", {})
+            )
+        }
         
         if (!(comparePasswords(password, user.password))) {
             throw new UnauthorizedException(

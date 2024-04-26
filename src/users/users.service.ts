@@ -140,12 +140,6 @@ export class UsersService {
             InternalServerExcp(error);
         }
 
-        if (!user) {
-            throw new NotFoundException(
-                customMessage(HttpStatus.NOT_FOUND, "Usuário específicado não existe.", {})
-            )
-        }
-
         return user;
     }
 }
