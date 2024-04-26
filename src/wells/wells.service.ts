@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { SerializedWell } from './types/serializedWell';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
+import InternalServerExcp from 'src/shared/errors/internalServer.error';
 
 @Injectable()
 export class WellsService {
@@ -30,14 +31,7 @@ export class WellsService {
 
                 return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
             } catch (error) {
-                Logger.error('Erro encontrado', error);
-                throw new InternalServerErrorException(
-                    customMessage(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        'Um erro foi encontrado! Tente mais tarde, por favor',
-                        {}
-                    )
-                )
+                InternalServerExcp(error);
             }
         }
 
@@ -49,15 +43,7 @@ export class WellsService {
             return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
 
         } catch (error) {
-            Logger.error('Erro encontrado', error);
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
-
+            InternalServerExcp(error);
         }
     }
 
@@ -70,14 +56,7 @@ export class WellsService {
                 wells.map((well) => new SerializedWell(well))
             )
         } catch (error) {
-            Logger.error('Erro encontrado', error);
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -92,14 +71,7 @@ export class WellsService {
                 new SerializedWell(well)
             )
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -109,14 +81,7 @@ export class WellsService {
         try {
             well = await this.wellRepository.findOneBy({ id })
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
 
         if (!well) {
@@ -139,15 +104,8 @@ export class WellsService {
                 ("Poços do proprietário: " + userId),
                 userWells.map((well) => new SerializedWell(well)))
 
-        } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+        } catch (error) {            
+            InternalServerExcp(error);
         }
     }
 
@@ -165,14 +123,7 @@ export class WellsService {
             await this.wellRepository.update(id, updateUserOwnershipDto);
             return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -180,14 +131,7 @@ export class WellsService {
         try {
             return await this.wellRepository.findOneBy({ ordinance });
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 

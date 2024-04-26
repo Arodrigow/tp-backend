@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { SerializedUser } from './types/serializedUser';
 import { encodePassword } from 'src/shared/utils/bcrypt';
+import InternalServerExcp from 'src/shared/errors/internalServer.error';
 
 @Injectable()
 export class UsersService {
@@ -54,9 +55,7 @@ export class UsersService {
             const user = this.userRepository.save(newUser)
             return customMessage(HttpStatus.OK, 'Conta criada com sucesso', {})
         } catch (error) {
-            throw new InternalServerErrorException(
-                customMessage(HttpStatus.INTERNAL_SERVER_ERROR, 'Um erro foi encontrado! Tente mais tarde, por favor', {})
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -70,14 +69,7 @@ export class UsersService {
                 new SerializedUser(user)
             )
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -91,14 +83,7 @@ export class UsersService {
                 users.map((user) => new SerializedUser(user))
             )
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -108,14 +93,7 @@ export class UsersService {
             await this.userRepository.update(id, updateUserDto);
             return customMessage(HttpStatus.OK, 'Usuário atualizado com sucesso', {})
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
     
@@ -124,14 +102,7 @@ export class UsersService {
         try {
             user = await this.userRepository.findOneBy({ id })
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
 
         if (!user) {
@@ -166,14 +137,7 @@ export class UsersService {
         try {
             user = await this.userRepository.findOneBy({ cpf })
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
 
         if (!user) {

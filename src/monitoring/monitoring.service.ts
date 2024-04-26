@@ -6,6 +6,7 @@ import { WellsService } from 'src/wells/wells.service';
 import { CreateMonitoringDto } from './dto/create-monitoring.dto';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { UpdateMonitoringDto } from './dto/update-monitoring.dto';
+import InternalServerExcp from 'src/shared/errors/internalServer.error';
 
 @Injectable()
 export class MonitoringService {
@@ -27,14 +28,7 @@ export class MonitoringService {
             await this.monitRepository.save(newEntry);
 
         } catch (error) {
-            Logger.error('Erro encontrado', error);
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -55,14 +49,7 @@ export class MonitoringService {
                 {}
             )
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
     }
 
@@ -72,16 +59,9 @@ export class MonitoringService {
             entry = await this.monitRepository.findOneBy({ id });
 
         } catch (error) {
-            Logger.error('Erro encontrado: ', error)
-            throw new InternalServerErrorException(
-                customMessage(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    'Um erro foi encontrado! Tente mais tarde, por favor',
-                    {}
-                )
-            )
+            InternalServerExcp(error);
         }
-        
+
         if (!entry) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Entrada especificada não existe!", {})
