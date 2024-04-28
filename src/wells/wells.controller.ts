@@ -21,14 +21,14 @@ export class WellsController {
         return await this.wellService.findAllWells();
     }
     
-    @Get(':id')
-    async findWllById(@Param('id') id:string){
-        return await this.wellService.findWellById(id);
+    @Get(':ordinance')
+    async findWllById(@Param('ordinance') ordinance:string){
+        return await this.wellService.findWellByOrdinance(ordinance);
     }
 
     @Get('ordinance/:ordinance')
-    async findWellByOrdinance(@Param('ordinance') ordinance:string){
-        return await this.wellService.findWellByOrdinance(ordinance);
+    async findWellByOrdinanceNotOwn(@Param('ordinance') ordinance:string){
+        return await this.wellService.findWellByOrdinanceNotOwn(ordinance);
     }
 
     @Get('user/:userId')
@@ -36,8 +36,8 @@ export class WellsController {
         return await this.wellService.listWellsByUser(userId);
     }
 
-    @Patch(':id')
-    async updateUserOwnership(@Param('id') id:string, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
-        return await this.wellService.updateUserOwnership(id, updateUserOwnershipDto);
+    @Patch(':ordinance')
+    async updateUserOwnership(@Param('ordinance') ordinance:string, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
+        return await this.wellService.updateUserOwnership(ordinance, updateUserOwnershipDto);
     }
 }

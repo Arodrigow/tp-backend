@@ -18,7 +18,7 @@ export class WellsService {
 
     async createWell({ ordinance, userId }: CreateWellDto) {
 
-        if (await this.getOneByOrdinance(ordinance)) {
+        if (await this.getWellByOrdinance(ordinance)) {
             throw new ConflictException(
                 customMessage(HttpStatus.CONFLICT, 'Já existe um poço com esta portaria.', {})
             );
@@ -104,15 +104,15 @@ export class WellsService {
                 ("Poços do proprietário: " + userId),
                 userWells.map((well) => new SerializedWell(well)))
 
-        } catch (error) {            
+        } catch (error) {
             InternalServerExcp(error);
         }
     }
 
 
-    async updateUserOwnership(id: string, updateUserOwnershipDto: UpdateUserOwnershipDto) {
+    async updateUserOwnership(ordinance: string, updateUserOwnershipDto: UpdateUserOwnershipDto) {
 
-        const well = await this.getOneWell(id);
+        const well = await this.getWellByOrdinance(ordinance);
         if (well.hasActiveUser) {
             throw new BadRequestException(customMessage(
                 HttpStatus.BAD_REQUEST, 'Este poço já possui proprietário', {}
@@ -120,37 +120,65 @@ export class WellsService {
         }
 
         try {
-            await this.wellRepository.update(id, updateUserOwnershipDto);
+            await this.wellRepository.update(well.id, updateUserOwnershipDto);
             return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
         } catch (error) {
             InternalServerExcp(error);
         }
     }
 
-    async getOneByOrdinance(ordinance: string) {
+    async getWellByOrdinance(ordinance: string) {
         try {
             return await this.wellRepository.findOneBy({ ordinance });
         } catch (error) {
             InternalServerExcp(error);
         }
+
     }
 
     async findWellByOrdinance(ordinance: string) {
-        const well = await this.getOneByOrdinance(ordinance);
+        const well = await this.getWellByOrdinance(ordinance);
 
-        if (!well.hasActiveUser) {
-            return customMessage(
-                HttpStatus.OK,
-                'Poço com portaria nº: ' + ordinance,
-                new SerializedWell(well)
+        if (!well) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
             )
         }
-        if (well.hasActiveUser) {
-            return customMessage(
-                HttpStatus.OK,
-                'Poço com portaria nº: ' + ordinance + " já possui responsável cadastrado.",
-                {}
+
+        try {
+            return customMessage(HttpStatus.OK, `Poço - Portaria ${ordinance}`, new SerializedWell(well))
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async findWellByOrdinanceNotOwn(ordinance: string) {
+        const well = await this.getWellByOrdinance(ordinance);
+
+        if (!well) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
             )
+        }
+
+        try {
+            if (!well.hasActiveUser) {
+                return customMessage(
+                    HttpStatus.OK,
+                    'Poço com portaria nº: ' + ordinance,
+                    new SerializedWell(well)
+                )
+            }
+            if (well.hasActiveUser) {
+                return customMessage(
+                    HttpStatus.CONFLICT,
+                    'Poço com portaria nº: ' + ordinance + " já possui responsável cadastrado.",
+                    {}
+                )
+            }
+
+        } catch (error) {
+            InternalServerExcp(error);
         }
     }
 }

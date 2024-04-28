@@ -6,7 +6,7 @@ export default function InternalServerExcp(error: any) {
     throw new InternalServerErrorException(
         customMessage(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            'Um erro foi encontrado! Tente mais tarde, por favor - teste',
+            'Um erro foi encontrado! Tente mais tarde, por favor ',
             {}
         )
     )
