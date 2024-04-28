@@ -162,7 +162,6 @@ export class UsersService {
             withDeleted: true,
             where: { id, deletedAt: Not(IsNull()) }
         });
-        console.log(!user);
 
         if(!user){
             throw new NotFoundException(

@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wells } from './entities/well.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UsersService } from 'src/users/users.service';
 import customMessage from 'src/shared/responses/customMessage.response';
@@ -129,7 +129,7 @@ export class WellsService {
 
     async getWellByOrdinance(ordinance: string) {
         try {
-            return await this.wellRepository.findOneBy({ ordinance });
+            return await this.wellRepository.findOneBy({ordinance});
         } catch (error) {
             InternalServerExcp(error);
         }
@@ -177,6 +177,44 @@ export class WellsService {
                 )
             }
 
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async deleteWell(ordinance:string){
+        const well = await this.getWellByOrdinance(ordinance);
+
+        if (!well) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
+            )
+        }
+        try {
+            await this.wellRepository.softDelete(well)
+            return customMessage(HttpStatus.OK,
+                "Poço deletado com sucesso",
+                {}
+            )
+            
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async restoreWell(ordinance: string){
+        const well = await this.wellRepository.findOne({withDeleted: true, where:{ordinance,deletedAt: Not(IsNull())}});        
+        if(!well){
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe ou não foi deletado.", {})
+            )
+        }
+        try {
+            await this.wellRepository.restore(well.id);
+            return customMessage(HttpStatus.OK,
+                "Poço recuperado com sucesso",
+                {}
+            )
         } catch (error) {
             InternalServerExcp(error);
         }

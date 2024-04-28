@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
@@ -39,5 +39,15 @@ export class WellsController {
     @Patch(':ordinance')
     async updateUserOwnership(@Param('ordinance') ordinance:string, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
         return await this.wellService.updateUserOwnership(ordinance, updateUserOwnershipDto);
+    }
+
+    @Delete('delete/:ordinance')
+    async deleteWell(@Param('ordinance') ordinance:string){
+        return await this.wellService.deleteWell(ordinance);
+    }
+
+    @Patch('restore/:ordinance')
+    async restoreWell(@Param('ordinance') ordinance:string){
+        return await this.wellService.restoreWell(ordinance);
     }
 }
