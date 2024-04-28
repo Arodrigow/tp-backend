@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -37,4 +37,13 @@ export class UsersController {
         return await this.usersService.updateUser(id, updateUserDto);
     }
 
+    @Delete('delete/:id')
+    async softDeleteUser(@Param('id') id:string){
+        return await this.usersService.softDeleteUser(id);
+    }
+
+    @Patch('restore/:id')
+    async restoreUser(@Param('id') id:string){
+        return await this.usersService.restoreUser(id);
+    }
 }

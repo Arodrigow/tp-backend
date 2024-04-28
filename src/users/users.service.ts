@@ -76,7 +76,7 @@ export class UsersService {
     async findAll(): Promise<object> {
 
         try {
-            const users: Array<Users> = await this.userRepository.find();
+            const users: Array<Users> = await this.userRepository.find( {withDeleted:true});
             return customMessage(
                 HttpStatus.OK,
                 'Lista de todos os usuários',
@@ -141,5 +141,43 @@ export class UsersService {
         }
 
         return user;
+    }
+    
+    async softDeleteUser(id: string){
+        await this.getUserById(id);
+
+        try {
+            await this.userRepository.softDelete(id);
+            return customMessage(HttpStatus.OK,
+                "Usuário deletado com sucesso",
+                {}
+            )
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async restoreUser(id: string){
+        const user = await this.userRepository.findOne({
+            withDeleted: true,
+            where: { id, deletedAt: Not(IsNull()) }
+        });
+        console.log(!user);
+
+        if(!user){
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Usuário especificado não existe ou não foi deletado.", {})
+            )
+        }
+        
+        try {
+            await this.userRepository.restore(id);
+            return customMessage(HttpStatus.OK,
+                "Usuário recuperado com sucesso",
+                {}
+            )
+        } catch (error) {
+            InternalServerExcp(error);
+        }
     }
 }

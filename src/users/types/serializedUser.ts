@@ -7,6 +7,7 @@ export class SerializedUser {
     cpf:string;
     email:string;
     phone_number:string;
+    deletedAt:Date;
 
     @Exclude()
     password:string;
@@ -16,9 +17,6 @@ export class SerializedUser {
 
     @Exclude()
     updatedAt:Date;
-
-    @Exclude()
-    deletedAt:Date;
 
     constructor(partial: Partial<SerializedUser>){
         Object.assign(this, partial);
