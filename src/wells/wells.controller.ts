@@ -2,6 +2,8 @@ import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { UpdateWellDto } from './dto/update-well.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('wells')
@@ -36,9 +38,14 @@ export class WellsController {
         return await this.wellService.listWellsByUser(userId);
     }
 
-    @Patch(':ordinance')
+    @Patch('user/:ordinance')
     async updateUserOwnership(@Param('ordinance') ordinance:number, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
         return await this.wellService.updateUserOwnership(ordinance, updateUserOwnershipDto);
+    }
+
+    @Patch(':ordinance')
+    async updateWell(@Param('ordinance') ordinance:number, @Body() updateWellDto:UpdateWellDto){
+        return await this.wellService.updateWell(ordinance, updateWellDto);
     }
 
     @Delete('delete/:ordinance')

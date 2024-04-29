@@ -8,6 +8,7 @@ import customMessage from 'src/shared/responses/customMessage.response';
 import { SerializedWell } from './types/serializedWell';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
 import InternalServerExcp from 'src/shared/errors/internalServer.error';
+import { UpdateWellDto } from './dto/update-well.dto';
 
 @Injectable()
 export class WellsService {
@@ -16,17 +17,17 @@ export class WellsService {
         private readonly userService: UsersService
     ) { }
 
-    async createWell({ ordinance, userId }: CreateWellDto) {
+    async createWell(createWellDto: CreateWellDto) {
 
-        if (await this.getWellByOrdinance(ordinance)) {
+        if (await this.getWellByOrdinance(createWellDto.ordinance)) {
             throw new ConflictException(
                 customMessage(HttpStatus.CONFLICT, 'Já existe um poço com esta portaria.', {})
             );
         }
 
-        if (!userId) {
+        if (!createWellDto.userId) {
             try {
-                const newWell = this.wellRepository.create({ ordinance });
+                const newWell = this.wellRepository.create({...createWellDto});
                 await this.wellRepository.save(newWell);
 
                 return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
@@ -36,8 +37,8 @@ export class WellsService {
         }
 
         try {
-            const user = await this.userService.getUserById(userId);
-            const newWell = this.wellRepository.create({ ordinance, userId: user.id, hasActiveUser: true });
+            const user = await this.userService.getUserById(createWellDto.userId);
+            const newWell = this.wellRepository.create({ ...createWellDto, hasActiveUser: true });
 
             await this.wellRepository.save(newWell);
             return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
@@ -110,9 +111,15 @@ export class WellsService {
     }
 
 
-    async updateUserOwnership(ordinance: number, updateUserOwnershipDto: UpdateUserOwnershipDto) {
+    async updateUserOwnership(ordinance: number, {userId, hasActiveUser}: UpdateUserOwnershipDto) {
 
         const well = await this.getWellByOrdinance(ordinance);
+        if (!well) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
+            )
+        }
+
         if (well.hasActiveUser) {
             throw new BadRequestException(customMessage(
                 HttpStatus.BAD_REQUEST, 'Este poço já possui proprietário', {}
@@ -120,8 +127,26 @@ export class WellsService {
         }
 
         try {
-            await this.wellRepository.update(well.id, updateUserOwnershipDto);
+            await this.wellRepository.update(well.id, {userId, hasActiveUser});
             return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async updateWell(ordinance: number, updateWellDto: UpdateWellDto){
+        const well = await this.getWellByOrdinance(ordinance);
+        if (!well) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
+            )
+        }
+        
+        await this.userService.getUserById(updateWellDto.userId);
+
+        try {
+            await this.wellRepository.update(well.id, {...updateWellDto});
+            return customMessage(HttpStatus.OK, "Poço atualizado com sucesso.", {})
         } catch (error) {
             InternalServerExcp(error);
         }
