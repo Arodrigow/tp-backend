@@ -8,17 +8,102 @@ export class Wells1713965202038 implements MigrationInterface {
             name: 'wells',
             columns: [
                 {
+                    name:'LON',
+                    type:'NUMERIC(10, 8)',
+                    isNullable: true
+                },
+                {
+                    name:'LAT',
+                    type:'NUMERIC(10, 8)',
+                    isNullable: true
+                },
+                {
+                    name:'ordinance',
+                    type:'BIGINT',
+                    isNullable: false
+                },
+                {
+                    name:'NE',
+                    type:'NUMERIC(5, 2)',
+                    isNullable: true
+                },
+                {
+                    name:'ND',
+                    type:'NUMERIC(5, 2)',
+                    isNullable: true
+                },
+                {
+                    name:'statuspa',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'tipoUso',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'modUso',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'vaz',
+                    type:'NUMERIC(5, 2)',
+                    isNullable: true
+                },
+                {
+                    name:'tCap',
+                    type:'INT',
+                    isNullable: true
+                },
+                {
+                    name:'profPc',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'diaPcmm',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'finUso',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'tpoConsu',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'siglaCh',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'baciaFede',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'ueg',
+                    type:'TEXT',
+                    isNullable: true
+                },
+                {
+                    name:'chNome',
+                    type:'TEXT',
+                    isNullable: true
+                },                
+                {
                     name: 'id',
                     type: 'uuid',
                     isPrimary: true,
                     default: 'uuid_generate_v4()',
                     isGenerated: true,
                     generationStrategy: 'uuid',
-                },
-                {
-                    name:'ordinance',
-                    type:'varchar',
-                    isNullable: false
                 },
                 {
                     name: 'userId',

@@ -5,14 +5,84 @@ import { v4 as uuidv4 } from 'uuid'
 @Entity()
 export class Wells {
 
+  @Column(
+    {
+      type: "numeric",
+    }
+  )
+  LON: number;
+
+  @Column(
+    {
+      type: "numeric"
+    })
+  LAT: number;
+
+  @Column()
+  ordinance: number;
+
+  @Column(
+    {
+      type: "numeric"
+    })
+  NE: number;
+
+  @Column(
+    {
+      type: "numeric",
+    })
+  ND: number;
+
+  @Column()
+  statuspa: string;
+
+  @Column()
+  tipoUso: string;
+
+  @Column()
+  modUso: string;
+
+  @Column(
+    {
+      type: "numeric",
+    })
+  vaz: number;
+
+  @Column(
+    {
+      type: "numeric",
+    })
+  tCap: number;
+
+  @Column()
+  profPc: string;
+
+  @Column()
+  diaPcmm: string;
+
+  @Column()
+  finUso: string;
+
+  @Column()
+  tpoConsu: string;
+
+  @Column()
+  siglaCh: string;
+
+  @Column()
+  baciaFede: string;
+
+  @Column()
+  ueg: string;
+
+  @Column()
+  chNome: string;
+
   @PrimaryGeneratedColumn('uuid')
   id: string = uuidv4();
 
   @Column()
   userId: string;
-
-  @Column()
-  ordinance: string;
 
   @Column({ default: false })
   hasActiveUser: boolean;

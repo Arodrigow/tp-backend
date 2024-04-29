@@ -22,12 +22,12 @@ export class WellsController {
     }
     
     @Get(':ordinance')
-    async findWllById(@Param('ordinance') ordinance:string){
+    async findWllById(@Param('ordinance') ordinance:number){
         return await this.wellService.findWellByOrdinance(ordinance);
     }
 
     @Get('ordinance/:ordinance')
-    async findWellByOrdinanceNotOwn(@Param('ordinance') ordinance:string){
+    async findWellByOrdinanceNotOwn(@Param('ordinance') ordinance:number){
         return await this.wellService.findWellByOrdinanceNotOwn(ordinance);
     }
 
@@ -37,17 +37,17 @@ export class WellsController {
     }
 
     @Patch(':ordinance')
-    async updateUserOwnership(@Param('ordinance') ordinance:string, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
+    async updateUserOwnership(@Param('ordinance') ordinance:number, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
         return await this.wellService.updateUserOwnership(ordinance, updateUserOwnershipDto);
     }
 
     @Delete('delete/:ordinance')
-    async deleteWell(@Param('ordinance') ordinance:string){
+    async deleteWell(@Param('ordinance') ordinance:number){
         return await this.wellService.deleteWell(ordinance);
     }
 
     @Patch('restore/:ordinance')
-    async restoreWell(@Param('ordinance') ordinance:string){
+    async restoreWell(@Param('ordinance') ordinance:number){
         return await this.wellService.restoreWell(ordinance);
     }
 }

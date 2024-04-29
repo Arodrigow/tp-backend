@@ -110,7 +110,7 @@ export class WellsService {
     }
 
 
-    async updateUserOwnership(ordinance: string, updateUserOwnershipDto: UpdateUserOwnershipDto) {
+    async updateUserOwnership(ordinance: number, updateUserOwnershipDto: UpdateUserOwnershipDto) {
 
         const well = await this.getWellByOrdinance(ordinance);
         if (well.hasActiveUser) {
@@ -127,7 +127,7 @@ export class WellsService {
         }
     }
 
-    async getWellByOrdinance(ordinance: string) {
+    async getWellByOrdinance(ordinance: number) {
         try {
             return await this.wellRepository.findOneBy({ordinance});
         } catch (error) {
@@ -136,7 +136,7 @@ export class WellsService {
 
     }
 
-    async findWellByOrdinance(ordinance: string) {
+    async findWellByOrdinance(ordinance: number) {
         const well = await this.getWellByOrdinance(ordinance);
 
         if (!well) {
@@ -146,13 +146,16 @@ export class WellsService {
         }
 
         try {
-            return customMessage(HttpStatus.OK, `Poço - Portaria ${ordinance}`, new SerializedWell(well))
+            return customMessage(HttpStatus.OK, 
+                `Poço - Portaria ${ordinance}`, 
+                new SerializedWell(well)
+            )
         } catch (error) {
             InternalServerExcp(error);
         }
     }
 
-    async findWellByOrdinanceNotOwn(ordinance: string) {
+    async findWellByOrdinanceNotOwn(ordinance: number) {
         const well = await this.getWellByOrdinance(ordinance);
 
         if (!well) {
@@ -182,7 +185,7 @@ export class WellsService {
         }
     }
 
-    async deleteWell(ordinance:string){
+    async deleteWell(ordinance:number){
         const well = await this.getWellByOrdinance(ordinance);
 
         if (!well) {
@@ -202,7 +205,7 @@ export class WellsService {
         }
     }
 
-    async restoreWell(ordinance: string){
+    async restoreWell(ordinance: number){
         const well = await this.wellRepository.findOne({withDeleted: true, where:{ordinance,deletedAt: Not(IsNull())}});        
         if(!well){
             throw new NotFoundException(
