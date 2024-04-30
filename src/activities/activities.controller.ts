@@ -6,6 +6,11 @@ import { Role } from 'src/auth/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
+import { Pagination, PaginationParams } from 'src/search/decorators/paginationParams.decorator';
+import { Sorting, SortingParams } from 'src/search/decorators/sortParams.decorator';
+import { Filtering, FilteringParams } from 'src/search/decorators/filterParams.decorator';
+import { Activities } from './entities/activities.entity';
+import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
 
 @Controller('activities')
 export class ActivitiesController {
@@ -45,5 +50,14 @@ export class ActivitiesController {
     @Patch('restore/:id')
     async restoreActivity(@Param('id') id:string){
         return await this.activitiesService.restoreActivity(id);
+    }
+
+    @Get('search')
+    async getActivities(
+        @PaginationParams() paginationParams: Pagination,
+        @SortingParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic']) sort?: Sorting,
+        @FilteringParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic'])  filter?: Filtering
+    ):Promise<PaginatedResource<Partial<Activities>>>{
+        return await this.activitiesService.searchActivities(paginationParams, sort, filter);
     }
 }

@@ -1,9 +1,13 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Logger, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
-import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { UpdateWellDto } from './dto/update-well.dto';
+import { Pagination, PaginationParams } from '../search/decorators/paginationParams.decorator';
+import { Sorting, SortingParams } from '../search/decorators/sortParams.decorator';
+import { Filtering, FilteringParams } from '../search/decorators/filterParams.decorator';
+import { Wells } from './entities/well.entity';
+import { PaginatedResource } from '../search/dto/paginated-resources.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('wells')
@@ -57,4 +61,14 @@ export class WellsController {
     async restoreWell(@Param('ordinance') ordinance:number){
         return await this.wellService.restoreWell(ordinance);
     }
+
+    @Get('search')
+    async getWells(
+        @PaginationParams() paginationParams: Pagination,
+        @SortingParams(['NE', 'ND', 'profPc', 'chNome']) sort?: Sorting,
+        @FilteringParams(['NE', 'ND', 'profPc', 'chNome'])  filter?: Filtering
+    ):Promise<PaginatedResource<Partial<Wells>>>{
+        return await this.wellService.searchWells(paginationParams, sort, filter);
+    }
+
 }

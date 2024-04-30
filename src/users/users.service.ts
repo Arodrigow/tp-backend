@@ -8,6 +8,10 @@ import customMessage from 'src/shared/responses/customMessage.response';
 import { SerializedUser } from './types/serializedUser';
 import { encodePassword } from 'src/shared/utils/bcrypt';
 import InternalServerExcp from 'src/shared/errors/internalServer.error';
+import { Pagination } from 'src/search/decorators/paginationParams.decorator';
+import { Sorting } from 'src/search/decorators/sortParams.decorator';
+import { Filtering } from 'src/search/decorators/filterParams.decorator';
+import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
 
 @Injectable()
 export class UsersService {
@@ -178,5 +182,28 @@ export class UsersService {
         } catch (error) {
             InternalServerExcp(error);
         }
+    }
+
+    public async searchUsers(
+        { page, limit, size, offset }: Pagination,
+        sort?: Sorting,
+        filter?: Filtering,
+    ) {
+        const where = getWhere(filter);
+        const order = getOrder(sort);
+
+        const [languages, total] = await this.userRepository.findAndCount({
+            where,
+            order,
+            take: limit,
+            skip: offset,
+        });
+
+        return {
+            totalItems: total,
+            items: languages,
+            page,
+            size
+        };
     }
 }

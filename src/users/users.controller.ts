@@ -4,6 +4,11 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpExceptionFilter } from 'src/shared/filters/http-exception.filter';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Pagination, PaginationParams } from 'src/search/decorators/paginationParams.decorator';
+import { Sorting, SortingParams } from 'src/search/decorators/sortParams.decorator';
+import { Filtering, FilteringParams } from 'src/search/decorators/filterParams.decorator';
+import { Users } from './entities/user.entity';
+import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
 
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -45,5 +50,14 @@ export class UsersController {
     @Patch('restore/:id')
     async restoreUser(@Param('id') id:string){
         return await this.usersService.restoreUser(id);
+    }
+
+    @Get('search')
+    async searchUsers(
+        @PaginationParams() paginationParams: Pagination,
+        @SortingParams(['cpf', 'email', 'name', 'deleteAt']) sort?: Sorting,
+        @FilteringParams(['cpf', 'email', 'name', 'deleteAt'])  filter?: Filtering
+    ):Promise<PaginatedResource<Partial<Users>>>{
+        return await this.usersService.searchUsers(paginationParams, sort, filter);
     }
 }

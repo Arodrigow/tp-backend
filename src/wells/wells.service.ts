@@ -9,6 +9,11 @@ import { SerializedWell } from './types/serializedWell';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
 import InternalServerExcp from 'src/shared/errors/internalServer.error';
 import { UpdateWellDto } from './dto/update-well.dto';
+import { Sorting } from '../search/decorators/sortParams.decorator';
+import { Filtering } from '../search/decorators/filterParams.decorator';
+import { Pagination } from '../search/decorators/paginationParams.decorator';
+import { PaginatedResource } from '../search/dto/paginated-resources.dto';
+import { getOrder, getWhere } from '../search/helpers/queryHelper';
 
 @Injectable()
 export class WellsService {
@@ -246,5 +251,28 @@ export class WellsService {
         } catch (error) {
             InternalServerExcp(error);
         }
+    }
+
+    public async searchWells(
+        { page, limit, size, offset }: Pagination,
+        sort?: Sorting,
+        filter?: Filtering,
+    ) {
+        const where = getWhere(filter);
+        const order = getOrder(sort);
+
+        const [languages, total] = await this.wellRepository.findAndCount({
+            where,
+            order,
+            take: limit,
+            skip: offset,
+        });
+
+        return {
+            totalItems: total,
+            items: languages,
+            page,
+            size
+        };
     }
 }

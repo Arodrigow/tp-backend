@@ -6,6 +6,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import InternalServerExcp from 'src/shared/errors/internalServer.error';
 import customMessage from 'src/shared/responses/customMessage.response';
+import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
+import { Filtering } from 'src/search/decorators/filterParams.decorator';
+import { Sorting } from 'src/search/decorators/sortParams.decorator';
+import { Pagination } from 'src/search/decorators/paginationParams.decorator';
 
 @Injectable()
 export class ActivitiesService {
@@ -114,5 +118,28 @@ export class ActivitiesService {
         }
 
         return activity;
+    }
+
+    public async searchActivities(
+        { page, limit, size, offset }: Pagination,
+        sort?: Sorting,
+        filter?: Filtering,
+    ) {
+        const where = getWhere(filter);
+        const order = getOrder(sort);
+
+        const [languages, total] = await this.activitiesRepository.findAndCount({
+            where,
+            order,
+            take: limit,
+            skip: offset,
+        });
+
+        return {
+            totalItems: total,
+            items: languages,
+            page,
+            size
+        };
     }
 }
