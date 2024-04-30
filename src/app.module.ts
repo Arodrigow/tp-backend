@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { WellsModule } from './wells/wells.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
 import { ActivitiesModule } from './activities/activities.module';
+import { AccessModule } from './access/access.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ActivitiesModule } from './activities/activities.module';
     AuthModule,
     MonitoringModule,
     ActivitiesModule,
+    AccessModule,
   ],
   controllers: [AppController],
   providers: [AppService],

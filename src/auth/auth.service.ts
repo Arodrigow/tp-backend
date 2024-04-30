@@ -5,12 +5,13 @@ import { comparePasswords } from 'src/shared/utils/bcrypt';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService {    
 
     constructor(
         private readonly userService: UsersService,
         private readonly jwtService: JwtService
-    ) { }
+    ) { 
+    }
 
     async signIn(cpf: string, password: string): Promise<any> {
         const user = await this.userService.findByCPF(cpf);
@@ -25,13 +26,11 @@ export class AuthService {
                 customMessage(HttpStatus.UNAUTHORIZED, 'Senha incorreta', {})
             )
         }
-        const payload = { sub: user.id, name:user.name, cpf: user.cpf, email: user.email, phone_number: user.phone_number };
+        const payload = { sub: user.id, name:user.name, email: user.email, phone_number: user.phone_number};
 
         return customMessage(HttpStatus.CREATED, 'token created successfully', {
             ...payload,
             access_token: await this.jwtService.signAsync(payload),
         });
-
     }
-
 }
