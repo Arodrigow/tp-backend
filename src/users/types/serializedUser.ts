@@ -4,10 +4,12 @@ export class SerializedUser {
 
     id: string;
     name: string;
-    cpf:string;
     email:string;
     phone_number:string;
     deletedAt:Date;
+
+    @Exclude()
+    cpf:string;
 
     @Exclude()
     password:string;
