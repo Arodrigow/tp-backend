@@ -3,7 +3,9 @@ import { MigrationInterface, QueryRunner, Table } from "typeorm";
 export class Users1713819429819 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+        await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+        await queryRunner.query(`DROP TYPE IF EXISTS roles;`)
+        await queryRunner.query(`CREATE TYPE roles AS ENUM ('USER', 'ADMIN');`)
         await queryRunner.createTable(new Table({
             name: 'users',
             columns: [
@@ -37,6 +39,11 @@ export class Users1713819429819 implements MigrationInterface {
                 {
                     name: 'phone_number',
                     type: 'varchar'
+                },
+                {
+                    name: 'role',
+                    type:  'roles',
+                    default: "'USER'"
                 },
                 {
                     name: 'createdAt',

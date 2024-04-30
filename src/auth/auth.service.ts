@@ -26,7 +26,7 @@ export class AuthService {
                 customMessage(HttpStatus.UNAUTHORIZED, 'Senha incorreta', {})
             )
         }
-        const payload = { sub: user.id, name:user.name, email: user.email, phone_number: user.phone_number};
+        const payload = { sub: user.id, name:user.name, email: user.email, phone_number: user.phone_number, role:user.role};
 
         return customMessage(HttpStatus.CREATED, 'token created successfully', {
             ...payload,
