@@ -1,7 +1,7 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wells } from './entities/well.entity';
-import { IsNull, Not, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UsersService } from 'src/users/users.service';
 import customMessage from 'src/shared/responses/customMessage.response';
@@ -12,7 +12,6 @@ import { UpdateWellDto } from './dto/update-well.dto';
 import { Sorting } from '../search/decorators/sortParams.decorator';
 import { Filtering } from '../search/decorators/filterParams.decorator';
 import { Pagination } from '../search/decorators/paginationParams.decorator';
-import { PaginatedResource } from '../search/dto/paginated-resources.dto';
 import { getOrder, getWhere } from '../search/helpers/queryHelper';
 
 @Injectable()
@@ -32,7 +31,7 @@ export class WellsService {
 
         if (!createWellDto.userId) {
             try {
-                const newWell = this.wellRepository.create({...createWellDto});
+                const newWell = this.wellRepository.create({ ...createWellDto });
                 await this.wellRepository.save(newWell);
 
                 return customMessage(HttpStatus.OK, 'Poço criado com sucesso!', {})
@@ -116,7 +115,7 @@ export class WellsService {
     }
 
 
-    async updateUserOwnership(ordinance: number, {userId, hasActiveUser}: UpdateUserOwnershipDto) {
+    async updateUserOwnership(ordinance: number, { userId, hasActiveUser }: UpdateUserOwnershipDto) {
 
         const well = await this.getWellByOrdinance(ordinance);
         if (!well) {
@@ -132,25 +131,25 @@ export class WellsService {
         }
 
         try {
-            await this.wellRepository.update(well.id, {userId, hasActiveUser});
+            await this.wellRepository.update(well.id, { userId, hasActiveUser });
             return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
         } catch (error) {
             InternalServerExcp(error);
         }
     }
 
-    async updateWell(ordinance: number, updateWellDto: UpdateWellDto){
+    async updateWell(ordinance: number, updateWellDto: UpdateWellDto) {
         const well = await this.getWellByOrdinance(ordinance);
         if (!well) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
             )
         }
-        
+
         await this.userService.getUserById(updateWellDto.userId);
 
         try {
-            await this.wellRepository.update(well.id, {...updateWellDto});
+            await this.wellRepository.update(well.id, { ...updateWellDto });
             return customMessage(HttpStatus.OK, "Poço atualizado com sucesso.", {})
         } catch (error) {
             InternalServerExcp(error);
@@ -159,29 +158,46 @@ export class WellsService {
 
     async getWellByOrdinance(ordinance: number) {
         try {
-            return await this.wellRepository.findOneBy({ordinance});
+            return await this.wellRepository.findOneBy({ ordinance });
         } catch (error) {
             InternalServerExcp(error);
         }
 
     }
 
-    async findWellByOrdinance(ordinance: number) {
-        const well = await this.getWellByOrdinance(ordinance);
+    async findWellByOrdinance(ordinance?: number, ordinances?: string) {
+        if (!!ordinance) {
+            const well = await this.getWellByOrdinance(ordinance);
 
-        if (!well) {
-            throw new NotFoundException(
-                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
-            )
+            if (!well) {
+                throw new NotFoundException(
+                    customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
+                )
+            }
+
+            try {
+                return customMessage(HttpStatus.OK,
+                    `Poço - Portaria ${ordinance}`,
+                    new SerializedWell(well)
+                )
+            } catch (error) {
+                InternalServerExcp(error);
+            }
         }
+        if (!!ordinances) {
+            try {
+                const strOrd = JSON.parse(ordinances);
 
-        try {
-            return customMessage(HttpStatus.OK, 
-                `Poço - Portaria ${ordinance}`, 
-                new SerializedWell(well)
-            )
-        } catch (error) {
-            InternalServerExcp(error);
+                const wells = await this.wellRepository.find({where:{
+                    ordinance: In(strOrd)
+                }})
+                return customMessage(HttpStatus.OK,
+                    `Poço - Portaria ${ordinance}`,
+                    wells.map(well => new SerializedWell(well))
+                )
+            } catch (error) {
+                InternalServerExcp(error);                
+            }
         }
     }
 
@@ -215,7 +231,7 @@ export class WellsService {
         }
     }
 
-    async deleteWell(ordinance:number){
+    async deleteWell(ordinance: number) {
         const well = await this.getWellByOrdinance(ordinance);
 
         if (!well) {
@@ -229,15 +245,15 @@ export class WellsService {
                 "Poço deletado com sucesso",
                 {}
             )
-            
+
         } catch (error) {
             InternalServerExcp(error);
         }
     }
 
-    async restoreWell(ordinance: number){
-        const well = await this.wellRepository.findOne({withDeleted: true, where:{ordinance,deletedAt: Not(IsNull())}});        
-        if(!well){
+    async restoreWell(ordinance: number) {
+        const well = await this.wellRepository.findOne({ withDeleted: true, where: { ordinance, deletedAt: Not(IsNull()) } });
+        if (!well) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe ou não foi deletado.", {})
             )

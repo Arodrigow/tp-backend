@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Logger, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Logger, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
@@ -28,8 +28,8 @@ export class WellsController {
     }
     
     @Get(':ordinance')
-    async findWllById(@Param('ordinance') ordinance:number){
-        return await this.wellService.findWellByOrdinance(ordinance);
+    async findWllById(@Param('ordinance') ordinance:number, @Query('portarias') ordinances:string){
+        return await this.wellService.findWellByOrdinance(ordinance,ordinances);
     }
 
     @Get('ordinance/:ordinance')
