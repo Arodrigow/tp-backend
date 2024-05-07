@@ -23,9 +23,6 @@ export class SerializedWell{
     chNome: string;
     hasActiveUser: boolean;
     updatedAt: Date;
-
-
-    @Exclude()
     userId: string;
 
     @Exclude()
