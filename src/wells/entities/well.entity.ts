@@ -1,5 +1,5 @@
 import { Monitoring } from "src/monitoring/entities/monitoring.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid'
 
 @Entity()

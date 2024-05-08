@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsString, Validate } from "class-validator";
+import { CPForCNPJ } from "src/shared/validators/document.validator";
 
 export class CreateUserDto{
 
@@ -10,8 +11,9 @@ export class CreateUserDto{
     @IsNotEmpty()
     readonly password: string;
 
-    @IsNumber()
+    
     @IsNotEmpty()
+    @Validate(CPForCNPJ)
     readonly cpf: string;
 
     @IsEmail()
