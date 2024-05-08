@@ -7,13 +7,22 @@ export class Monitoring {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @Column()
+    @Column(
+        {
+          type: "numeric"
+        })
     flow: number
 
-    @Column()
+    @Column(
+        {
+          type: "numeric"
+        })
     level: number
 
-    @Column()
+    @Column(
+        {
+          type: "numeric"
+        })
     pumpTime: number
 
     @Column()
