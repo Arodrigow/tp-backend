@@ -38,16 +38,22 @@ export class ActivitiesController {
     }
 
     @Patch(':id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     async updateActivity(@Param('id') id:string, @Body() updateActivityDto:UpdateActivityDto){
         return await this.activitiesService.updateActivity(id, updateActivityDto);
     }
 
     @Delete('delete/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     async deleteActivity(@Param('id') id:string){
         return await this.activitiesService.deleteActivity(id);
     }
 
     @Patch('restore/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     async restoreActivity(@Param('id') id:string){
         return await this.activitiesService.restoreActivity(id);
     }

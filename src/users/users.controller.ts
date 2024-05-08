@@ -9,6 +9,9 @@ import { Sorting, SortingParams } from 'src/search/decorators/sortParams.decorat
 import { Filtering, FilteringParams } from 'src/search/decorators/filterParams.decorator';
 import { Users } from './entities/user.entity';
 import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { Role } from 'src/auth/enums/roles.enum';
+import { RoleGuard } from 'src/auth/guards/role.guard';
 
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,33 +29,43 @@ export class UsersController {
     }
 
     @Get()
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     async findAll(){
         return await this.usersService.findAll();
     }
 
-    @UseGuards(AuthGuard)
     @Get(':id')
+    @Roles(Role.USER)
+    @UseGuards(AuthGuard, RoleGuard)
     async findById(@Param('id') id: string){
         return await this.usersService.findUserById(id);
     }
 
-    @UseGuards(AuthGuard)
     @Patch(':id')
+    @Roles(Role.USER)
+    @UseGuards(AuthGuard, RoleGuard)
     async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto){
         return await this.usersService.updateUser(id, updateUserDto);
     }
 
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     @Delete('delete/:id')
     async softDeleteUser(@Param('id') id:string){
         return await this.usersService.softDeleteUser(id);
     }
 
     @Patch('restore/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     async restoreUser(@Param('id') id:string){
         return await this.usersService.restoreUser(id);
     }
 
     @Get('search')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
     async searchUsers(
         @PaginationParams() paginationParams: Pagination,
         @SortingParams(['cpf', 'email', 'name', 'deleteAt']) sort?: Sorting,
