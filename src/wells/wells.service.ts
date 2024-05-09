@@ -22,8 +22,9 @@ export class WellsService {
     ) { }
 
     async createWell(createWellDto: CreateWellDto) {
-
-        if (await this.getWellByOrdinance(createWellDto.ordinance)) {
+        const wells = await this.getWellsByOrdinance(createWellDto.ordinance);
+        
+        if (wells.length > 0) {
             throw new ConflictException(
                 customMessage(HttpStatus.CONFLICT, 'Já existe um poço com esta portaria.', {})
             );
@@ -65,21 +66,6 @@ export class WellsService {
         }
     }
 
-    async findWellById(id: string) {
-
-        const well = await this.getOneWell(id);
-
-        try {
-            return customMessage(
-                HttpStatus.OK,
-                `Poço ${id}`,
-                new SerializedWell(well)
-            )
-        } catch (error) {
-            InternalServerExcp(error);
-        }
-    }
-
     async getOneWell(id: string) {
         var well: Wells = new Wells();
 
@@ -87,12 +73,6 @@ export class WellsService {
             well = await this.wellRepository.findOneBy({ id })
         } catch (error) {
             InternalServerExcp(error);
-        }
-
-        if (!well) {
-            throw new NotFoundException(
-                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
-            )
         }
 
         return well;
@@ -115,9 +95,9 @@ export class WellsService {
     }
 
 
-    async updateUserOwnership(ordinance: number, { userId, hasActiveUser }: UpdateUserOwnershipDto) {
+    async updateUserOwnership(wellId: string, { userId, hasActiveUser }: UpdateUserOwnershipDto) {
 
-        const well = await this.getWellByOrdinance(ordinance);
+        const well = await this.getOneWell(wellId);
         if (!well) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
@@ -138,8 +118,8 @@ export class WellsService {
         }
     }
 
-    async updateWell(ordinance: number, updateWellDto: UpdateWellDto) {
-        const well = await this.getWellByOrdinance(ordinance);
+    async updateWell(wellId: string, updateWellDto: UpdateWellDto) {
+        const well = await this.getOneWell(wellId);
         if (!well) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
@@ -156,18 +136,18 @@ export class WellsService {
         }
     }
 
-    async getWellByOrdinance(ordinance: number) {
+    async getWellsByOrdinance(ordinance: number) {
         try {
-            return await this.wellRepository.findOneBy({ ordinance });
+            return await this.wellRepository.find({where: {ordinance} });
         } catch (error) {
             InternalServerExcp(error);
         }
 
     }
 
-    async findWellByOrdinance(ordinance?: number, ordinances?: string) {
-        if (!!ordinance) {
-            const well = await this.getWellByOrdinance(ordinance);
+    async findWellById(wellId?: string, wellIds?: string) {
+        if (!!wellIds) {
+            const well = await this.getOneWell(wellId);
 
             if (!well) {
                 throw new NotFoundException(
@@ -177,22 +157,22 @@ export class WellsService {
 
             try {
                 return customMessage(HttpStatus.OK,
-                    `Poço - Portaria ${ordinance}`,
+                    `Poço - Portaria ${wellId}`,
                     new SerializedWell(well)
                 )
             } catch (error) {
                 InternalServerExcp(error);
             }
         }
-        if (!!ordinances) {
+        if (!!wellIds) {
             try {
-                const strOrd = JSON.parse(ordinances);
+                const strOrd = JSON.parse(wellIds);
 
                 const wells = await this.wellRepository.find({where:{
                     ordinance: In(strOrd)
                 }})
                 return customMessage(HttpStatus.OK,
-                    `Poço - Portaria ${ordinance}`,
+                    `Lista de poços`,
                     wells.map(well => new SerializedWell(well))
                 )
             } catch (error) {
@@ -202,37 +182,40 @@ export class WellsService {
     }
 
     async findWellByOrdinanceNotOwn(ordinance: number) {
-        const well = await this.getWellByOrdinance(ordinance);
+        const wells = await this.getWellsByOrdinance(ordinance);
 
-        if (!well) {
+        if (wells.length == 0) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
             )
         }
 
         try {
-            if (!well.hasActiveUser) {
-                return customMessage(
-                    HttpStatus.OK,
-                    'Poço com portaria nº: ' + ordinance,
-                    new SerializedWell(well)
-                )
+            let wellResponse: Wells[];
+            wells.map( well => {
+                if (!well.hasActiveUser) {
+                    wellResponse.push(well);
+                }
+            })
+            if (wellResponse.length == 0) {
+                return customMessage(HttpStatus.OK, 
+                    'Não existem poços com esta Portaria sem usuário ativo',
+                    {}    
+                );
+                
             }
-            if (well.hasActiveUser) {
-                return customMessage(
-                    HttpStatus.CONFLICT,
-                    'Poço com portaria nº: ' + ordinance + " já possui responsável cadastrado.",
-                    {}
-                )
-            }
+
+            return customMessage(HttpStatus.OK, 
+                'Lista de poços sem dono',
+                wellResponse.map(well => new SerializedWell(well)));
 
         } catch (error) {
             InternalServerExcp(error);
         }
     }
 
-    async deleteWell(ordinance: number) {
-        const well = await this.getWellByOrdinance(ordinance);
+    async deleteWell(wellId: string) {
+        const well = await this.getOneWell(wellId);
 
         if (!well) {
             throw new NotFoundException(
@@ -251,8 +234,8 @@ export class WellsService {
         }
     }
 
-    async restoreWell(ordinance: number) {
-        const well = await this.wellRepository.findOne({ withDeleted: true, where: { ordinance, deletedAt: Not(IsNull()) } });
+    async restoreWell(wellId: string) {
+        const well = await this.wellRepository.findOne({ withDeleted: true, where: { id:wellId, deletedAt: Not(IsNull()) } });
         if (!well) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe ou não foi deletado.", {})

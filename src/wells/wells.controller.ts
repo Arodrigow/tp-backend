@@ -33,9 +33,9 @@ export class WellsController {
         return await this.wellService.findAllWells();
     }
     
-    @Get(':ordinance')
-    async findWllById(@Param('ordinance') ordinance:number, @Query('portarias') ordinances:string){
-        return await this.wellService.findWellByOrdinance(ordinance,ordinances);
+    @Get(':wellId')
+    async findWllById(@Param('wellId') wellId:string, @Query('wellIds') wellIds:string){
+        return await this.wellService.findWellById(wellId ,wellIds);
     }
 
     @Roles(Role.USER)
@@ -54,30 +54,30 @@ export class WellsController {
 
     @Roles(Role.USER)
     @UseGuards(AuthGuard, RoleGuard)
-    @Patch('user/:ordinance')
-    async updateUserOwnership(@Param('ordinance') ordinance:number, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
-        return await this.wellService.updateUserOwnership(ordinance, updateUserOwnershipDto);
+    @Patch('user/:wellId')
+    async updateUserOwnership(@Param('wellId') wellId:string, @Body() updateUserOwnershipDto:UpdateUserOwnershipDto){
+        return await this.wellService.updateUserOwnership(wellId, updateUserOwnershipDto);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
-    @Patch(':ordinance')
-    async updateWell(@Param('ordinance') ordinance:number, @Body() updateWellDto:UpdateWellDto){
-        return await this.wellService.updateWell(ordinance, updateWellDto);
+    @Patch(':wellId')
+    async updateWell(@Param('wellId') wellId:string, @Body() updateWellDto:UpdateWellDto){
+        return await this.wellService.updateWell(wellId, updateWellDto);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
-    @Delete('delete/:ordinance')
-    async deleteWell(@Param('ordinance') ordinance:number){
-        return await this.wellService.deleteWell(ordinance);
+    @Delete('delete/:wellId')
+    async deleteWell(@Param('wellId') wellId:string){
+        return await this.wellService.deleteWell(wellId);
     }
 
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
-    @Patch('restore/:ordinance')
-    async restoreWell(@Param('ordinance') ordinance:number){
-        return await this.wellService.restoreWell(ordinance);
+    @Patch('restore/:wellId')
+    async restoreWell(@Param('wellId') wellId:string){
+        return await this.wellService.restoreWell(wellId);
     }
 
     @Get('search')
