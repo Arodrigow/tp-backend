@@ -146,7 +146,7 @@ export class WellsService {
     }
 
     async findWellById(wellId?: string, wellIds?: string) {
-        if (!!wellIds) {
+        if (!!!wellIds) {
             const well = await this.getOneWell(wellId);
 
             if (!well) {
@@ -184,14 +184,14 @@ export class WellsService {
     async findWellByOrdinanceNotOwn(ordinance: number) {
         const wells = await this.getWellsByOrdinance(ordinance);
 
-        if (wells.length == 0) {
+        if (!!!wells) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe!", {})
             )
         }
 
         try {
-            let wellResponse: Wells[];
+            let wellResponse: Wells[] = [];
             wells.map( well => {
                 if (!well.hasActiveUser) {
                     wellResponse.push(well);
