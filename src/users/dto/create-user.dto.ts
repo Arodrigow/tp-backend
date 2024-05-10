@@ -13,7 +13,7 @@ export class CreateUserDto{
 
     
     @IsNotEmpty()
-    @Validate(CPForCNPJ)
+    //@Validate(CPForCNPJ)
     readonly cpf: string;
 
     @IsEmail()

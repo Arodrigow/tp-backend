@@ -77,20 +77,6 @@ export class UsersService {
         }
     }
 
-    async findAll(): Promise<object> {
-
-        try {
-            const users: Array<Users> = await this.userRepository.find( {withDeleted:true});
-            return customMessage(
-                HttpStatus.OK,
-                'Lista de todos os usuários',
-                users.map((user) => new SerializedUser(user))
-            )
-        } catch (error) {
-            InternalServerExcp(error);
-        }
-    }
-
     async updateUser(id: string, updateUserDto: UpdateUserDto) {
         await this.getUserById(id);
         try {
@@ -201,7 +187,7 @@ export class UsersService {
 
         return {
             totalItems: total,
-            items: languages,
+            items: languages.map(language => new SerializedUser(language)),
             page,
             size
         };

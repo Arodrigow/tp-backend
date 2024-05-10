@@ -28,13 +28,6 @@ export class UsersController {
        return await this.usersService.createUser(createUserDto);
     }
 
-    @Get()
-    @Roles(Role.ADMIN)
-    @UseGuards(AuthGuard, RoleGuard)
-    async findAll(){
-        return await this.usersService.findAll();
-    }
-
     @Get(':id')
     @Roles(Role.USER)
     @UseGuards(AuthGuard, RoleGuard)
