@@ -30,7 +30,7 @@ export class AuthService {
 
         return customMessage(HttpStatus.CREATED, 'token created successfully', {
             ...payload,
-            access_token: await this.jwtService.signAsync(payload,{expiresIn:300}),
+            access_token: await this.jwtService.signAsync(payload,{expiresIn:24*60*60}),
         });
     }
 }
