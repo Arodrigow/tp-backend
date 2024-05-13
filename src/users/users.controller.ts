@@ -65,11 +65,11 @@ export class UsersController {
     @Get('search')
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
-    async searchUsers(
+    async adminSearchUsers(
         @PaginationParams() paginationParams: Pagination,
         @SortingParams(['cpf', 'email', 'name', 'deleteAt']) sort?: Sorting,
         @FilteringParams(['cpf', 'email', 'name', 'deleteAt'])  filter?: Filtering
     ):Promise<PaginatedResource<Partial<Users>>>{
-        return await this.usersService.searchUsers(paginationParams, sort, filter);
+        return await this.usersService.adminSearchUsers(paginationParams, sort, filter);
     }
 }

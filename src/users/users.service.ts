@@ -79,7 +79,21 @@ export class UsersService {
     }
 
     async adminFindUserById(id: string): Promise<object> {
-        const user: Users = await this.getUserById(id);
+        var user: Users = new Users()
+        try {
+            user = await this.userRepository.findOne({
+                withDeleted: true,
+                where: { id }
+            })
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+
+        if (!user) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Usuário especificado não existe.", {})
+            )
+        }
 
         try {
             return customMessage(
@@ -185,7 +199,7 @@ export class UsersService {
         }
     }
 
-    public async searchUsers(
+    public async adminSearchUsers(
         { page, limit, size, offset }: Pagination,
         sort?: Sorting,
         filter?: Filtering,
@@ -194,6 +208,7 @@ export class UsersService {
         const order = getOrder(sort);
 
         const [languages, total] = await this.userRepository.findAndCount({
+            withDeleted:true,
             where,
             order,
             take: limit,
