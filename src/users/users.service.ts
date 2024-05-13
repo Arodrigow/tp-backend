@@ -12,6 +12,7 @@ import { Pagination } from 'src/search/decorators/paginationParams.decorator';
 import { Sorting } from 'src/search/decorators/sortParams.decorator';
 import { Filtering } from 'src/search/decorators/filterParams.decorator';
 import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
+import { AdminSerializedUser } from './types/adminSerializedUser';
 
 @Injectable()
 export class UsersService {
@@ -71,6 +72,20 @@ export class UsersService {
                 HttpStatus.OK,
                 `Usuário do ID: ${id}`,
                 new SerializedUser(user)
+            )
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async adminFindUserById(id: string): Promise<object> {
+        const user: Users = await this.getUserById(id);
+
+        try {
+            return customMessage(
+                HttpStatus.OK,
+                `Usuário do ID: ${id}`,
+                new AdminSerializedUser(user)
             )
         } catch (error) {
             InternalServerExcp(error);

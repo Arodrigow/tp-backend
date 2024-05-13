@@ -34,6 +34,12 @@ export class UsersController {
     async findById(@Param('id') id: string){
         return await this.usersService.findUserById(id);
     }
+    @Get('admin/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminFindById(@Param('id') id: string){
+        return await this.usersService.adminFindUserById(id);
+    }
 
     @Patch(':id')
     @Roles(Role.USER)
