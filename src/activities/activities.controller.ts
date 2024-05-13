@@ -66,4 +66,15 @@ export class ActivitiesController {
     ):Promise<PaginatedResource<Partial<Activities>>>{
         return await this.activitiesService.searchActivities(paginationParams, sort, filter);
     }
+
+    @Get('/admin/search')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminGetActivities(
+        @PaginationParams() paginationParams: Pagination,
+        @SortingParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic']) sort?: Sorting,
+        @FilteringParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic'])  filter?: Filtering
+    ):Promise<PaginatedResource<Partial<Activities>>>{
+        return await this.activitiesService.adminSearchActivities(paginationParams, sort, filter);
+    }
 }

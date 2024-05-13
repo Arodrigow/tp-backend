@@ -10,6 +10,7 @@ import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
 import { Filtering } from 'src/search/decorators/filterParams.decorator';
 import { Sorting } from 'src/search/decorators/sortParams.decorator';
 import { Pagination } from 'src/search/decorators/paginationParams.decorator';
+import { SerializedActivity } from './types/serializedActivity';
 
 @Injectable()
 export class ActivitiesService {
@@ -129,6 +130,30 @@ export class ActivitiesService {
         const order = getOrder(sort);
 
         const [languages, total] = await this.activitiesRepository.findAndCount({
+            where,
+            order,
+            take: limit,
+            skip: offset,
+        });
+
+        return {
+            totalItems: total,
+            items: languages.map(language => new SerializedActivity(language)),
+            page,
+            size
+        };
+    }
+
+    public async adminSearchActivities(
+        { page, limit, size, offset }: Pagination,
+        sort?: Sorting,
+        filter?: Filtering,
+    ) {
+        const where = getWhere(filter);
+        const order = getOrder(sort);
+
+        const [languages, total] = await this.activitiesRepository.findAndCount({
+            withDeleted:true,
             where,
             order,
             take: limit,

@@ -62,7 +62,7 @@ export class UsersController {
         return await this.usersService.restoreUser(id);
     }
 
-    @Get('search')
+    @Get('admin/search')
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
     async adminSearchUsers(
