@@ -41,7 +41,7 @@ export class ActivitiesController {
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
     async adminFindActivity(@Param('id') id:string){
-        return await this.activitiesService.findActivity(id);
+        return await this.activitiesService.adminFindActivity(id);
     }
 
     @Patch(':id')
