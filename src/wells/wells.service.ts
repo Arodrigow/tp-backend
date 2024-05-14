@@ -145,6 +145,34 @@ export class WellsService {
 
     }
 
+    async adminFindWellById(wellId:string){
+        let well: Wells = new Wells();
+        try {
+            well = await this.wellRepository.findOne({
+                withDeleted:true,
+                where:{id:wellId}
+            })            
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+
+        if(!well){
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Poço especificado não existe.", {})
+            )
+        }
+
+        try {
+            return customMessage(
+                HttpStatus.OK,
+                `Usuário do ID: ${wellId}`,
+                well
+            )
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
     async findWellById(wellId?: string, wellIds?: string) {
         if (!!!wellIds) {
             const well = await this.getOneWell(wellId);
@@ -261,6 +289,30 @@ export class WellsService {
         const order = getOrder(sort);
 
         const [languages, total] = await this.wellRepository.findAndCount({
+            where,
+            order,
+            take: limit,
+            skip: offset,
+        });
+
+        return {
+            totalItems: total,
+            items: languages.map(well => new SerializedWell(well)),
+            page,
+            size
+        };
+    }
+
+    public async adminSearchWells(
+        { page, limit, size, offset }: Pagination,
+        sort?: Sorting,
+        filter?: Filtering,
+    ) {
+        const where = getWhere(filter);
+        const order = getOrder(sort);
+
+        const [languages, total] = await this.wellRepository.findAndCount({
+            withDeleted: true,
             where,
             order,
             take: limit,

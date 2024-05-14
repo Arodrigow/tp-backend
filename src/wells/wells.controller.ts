@@ -34,8 +34,15 @@ export class WellsController {
     }
     
     @Get(':wellId')
-    async findWllById(@Param('wellId') wellId:string, @Query('wellIds') wellIds:string){
+    async findWellById(@Param('wellId') wellId:string, @Query('wellIds') wellIds:string){
         return await this.wellService.findWellById(wellId ,wellIds);
+    }
+
+    @Get('admin/:wellId')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminFindWellById(@Param('wellId') wellId:string){
+        return await this.wellService.adminFindWellById(wellId);
     }
 
     @Roles(Role.USER)
@@ -80,6 +87,7 @@ export class WellsController {
         return await this.wellService.restoreWell(wellId);
     }
 
+    
     @Get('search')
     async getWells(
         @PaginationParams() paginationParams: Pagination,
@@ -89,4 +97,14 @@ export class WellsController {
         return await this.wellService.searchWells(paginationParams, sort, filter);
     }
 
+    @Get('admin/search')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminGetWells(
+        @PaginationParams() paginationParams: Pagination,
+        @SortingParams(['NE', 'ND', 'profPc', 'chNome']) sort?: Sorting,
+        @FilteringParams(['NE', 'ND', 'profPc', 'chNome'])  filter?: Filtering
+    ):Promise<PaginatedResource<Partial<Wells>>>{
+        return await this.wellService.adminSearchWells(paginationParams, sort, filter);
+    }
 }
