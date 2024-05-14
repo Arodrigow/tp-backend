@@ -37,6 +37,13 @@ export class ActivitiesController {
         return await this.activitiesService.findActivity(id);
     }
 
+    @Get('admin/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminFindActivity(@Param('id') id:string){
+        return await this.activitiesService.findActivity(id);
+    }
+
     @Patch(':id')
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)

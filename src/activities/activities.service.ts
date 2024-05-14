@@ -54,8 +54,35 @@ export class ActivitiesService {
 
         return customMessage(HttpStatus.OK,
             `Atividade de Processo nº: ${activity.processo}`,
-            activity
+            new SerializedActivity(activity)
         )
+    }
+    async adminFindActivity(id: string) {
+        var activity: Activities = new Activities()
+        try {
+            activity = await this.activitiesRepository.findOne({
+                withDeleted: true,
+                where: { id }
+            })
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+
+        if (!activity) {
+            throw new NotFoundException(
+                customMessage(HttpStatus.NOT_FOUND, "Atividade especificada não existe.", {})
+            )
+        }
+
+        try {
+            return customMessage(
+                HttpStatus.OK,
+                `Usuário do ID: ${id}`,
+                activity
+            )
+        } catch (error) {
+            InternalServerExcp(error);
+        }
     }
 
     async updateActivity(id: string, updateActivityDto: UpdateActivityDto) {
