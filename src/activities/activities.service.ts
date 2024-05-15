@@ -109,7 +109,7 @@ export class ActivitiesService {
             )
         }
         try {
-            await this.activitiesRepository.softDelete(id);
+            await this.activitiesRepository.softRemove(activity);
             return customMessage(HttpStatus.OK,
                 `Atividade - Processo nº: ${activity.processo} deletada com sucesso`,
                 {}

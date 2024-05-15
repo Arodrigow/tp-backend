@@ -163,10 +163,10 @@ export class UsersService {
     }
     
     async softDeleteUser(id: string){
-        await this.getUserById(id);
+        const user = await this.getUserById(id);
 
         try {
-            await this.userRepository.softDelete(id);
+            await this.userRepository.softRemove(user);
             return customMessage(HttpStatus.OK,
                 "Usuário deletado com sucesso",
                 {}

@@ -70,7 +70,7 @@ export class WellsService {
         var well: Wells = new Wells();
 
         try {
-            well = await this.wellRepository.findOneBy({ id })
+            well = await this.wellRepository.findOne({where:{id}})
         } catch (error) {
             InternalServerExcp(error);
         }
@@ -251,7 +251,8 @@ export class WellsService {
             )
         }
         try {
-            await this.wellRepository.softDelete(well)
+            await this.wellRepository.softRemove(well);
+            
             return customMessage(HttpStatus.OK,
                 "Poço deletado com sucesso",
                 {}
