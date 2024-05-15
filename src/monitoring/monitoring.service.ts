@@ -34,15 +34,14 @@ export class MonitoringService {
 
     async updateEntry(wellId: string, id: number, updateMonitoringDto: UpdateMonitoringDto) {
         const entry = await this.findOneEntryById(id);
-
-        if (entry.well.id != wellId) {
+        
+        if (entry.wellId != wellId) {
             throw new ForbiddenException(
                 customMessage(HttpStatus.FORBIDDEN, "Entrada especificada não pertence a este poço!", {})
             )            
         }
-
         try {
-            await this.monitRepository.update(id, updateMonitoringDto);
+            await this.monitRepository.update(entry.id, updateMonitoringDto);
             return customMessage(
                 HttpStatus.OK,
                 'Atualização da entrada realizada com sucesso',
@@ -57,7 +56,6 @@ export class MonitoringService {
         var entry = new Monitoring();
         try {
             entry = await this.monitRepository.findOneBy({ id });
-
         } catch (error) {
             InternalServerExcp(error);
         }
@@ -67,7 +65,6 @@ export class MonitoringService {
                 customMessage(HttpStatus.NOT_FOUND, "Entrada especificada não existe!", {})
             )
         }
-
         return entry;
     }
 }
