@@ -1,7 +1,7 @@
 import { Wells } from "src/wells/entities/well.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity({name:'monitoring'})
 export class Monitoring {
 
     @PrimaryGeneratedColumn('increment')
@@ -9,24 +9,33 @@ export class Monitoring {
 
     @Column(
         {
-          type: "numeric"
+          type: "numeric",
+          nullable:true
         })
     flow: number
 
     @Column(
         {
-          type: "numeric"
+          type: "numeric",
+          nullable:true
         })
     level: number
 
     @Column(
         {
-          type: "numeric"
+          type: "numeric",
+          nullable:true
         })
     pumpTime: number
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     date: Date
+
+    @Column()
+    @Index()
+    wellId: string
 
     @ManyToOne(() => Wells,
         {
@@ -34,7 +43,7 @@ export class Monitoring {
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
         })
-        @JoinColumn({ name: 'wellId' })
+        @JoinColumn({name: 'wellId', referencedColumnName:'id' })
     well: Wells
 
     @CreateDateColumn({

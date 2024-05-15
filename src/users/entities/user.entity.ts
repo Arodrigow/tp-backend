@@ -2,7 +2,7 @@ import { Role } from "src/auth/enums/roles.enum";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import {v4 as uuidv4} from 'uuid'
 
-@Entity()
+@Entity({name:'users'})
 export class Users{
 
     @PrimaryGeneratedColumn('uuid')
@@ -23,7 +23,9 @@ export class Users{
     @Column()
     phone_number:string;
     
-    @Column()
+    @Column(
+      {default:Role.USER}
+    )
     role:Role;
 
     @CreateDateColumn({

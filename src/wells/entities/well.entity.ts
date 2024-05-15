@@ -2,86 +2,118 @@ import { Monitoring } from "src/monitoring/entities/monitoring.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid'
 
-@Entity()
+@Entity({name:'wells'})
 export class Wells {
 
   @Column(
     {
       type: "numeric",
+      nullable:true
     }
   )
   LON: number;
 
   @Column(
     {
-      type: "numeric"
+      type: "numeric",
+      nullable:true
     })
   LAT: number;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   ordinance: number;
 
   @Column(
     {
-      type: "numeric"
+      type: "numeric",
+      nullable:true
     })
   NE: number;
 
   @Column(
     {
       type: "numeric",
+      nullable:true
     })
   ND: number;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   statuspa: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   tipoUso: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   modUso: string;
 
   @Column(
     {
       type: "numeric",
+      nullable:true
     })
   vaz: number;
 
   @Column(
     {
       type: "numeric",
+      nullable:true
     })
   tCap: number;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   profPc: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   diaPcmm: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   finUso: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   tpoConsu: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   siglaCh: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   baciaFede: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   ueg: string;
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   chNome: string;
 
   @PrimaryGeneratedColumn('uuid')
   id: string = uuidv4();
 
-  @Column()
+  @Column({
+    nullable:true
+  })
   userId: string;
 
   @Column({ default: false })
@@ -89,7 +121,8 @@ export class Wells {
 
   @OneToMany(() => Monitoring, (monitoring) => monitoring.well,
     {
-      cascade: true, eager: true
+      cascade: ["soft-remove","update","recover"],
+      eager:true
     })
   monitoring: Monitoring;
 
