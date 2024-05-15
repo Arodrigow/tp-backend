@@ -14,7 +14,7 @@ export class MonitoringController {
     ){}
 
     
-    @Roles(Role.USER)
+    @Roles(Role.USER, Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
     @Post(':wellId')
     async createEntry(@Param('wellId') wellId:string, @Body() createMonitoringDto: CreateMonitoringDto){
