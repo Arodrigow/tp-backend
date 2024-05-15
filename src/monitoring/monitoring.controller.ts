@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { MonitoringService } from './monitoring.service';
 import { CreateMonitoringDto } from './dto/create-monitoring.dto';
 import { UpdateMonitoringDto } from './dto/update-monitoring.dto';
@@ -26,5 +26,19 @@ export class MonitoringController {
     @UseGuards(AuthGuard, RoleGuard)
     async updateEntry(@Param('wellId') wellId:string, @Param('id') id:number, @Body() updateMonitoringDto: UpdateMonitoringDto){
         return await this.monitoringService.updateEntry(wellId, id, updateMonitoringDto);
+    }
+
+    @Delete('admin/delete/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async deleteEntry(@Param('id') id:number){
+        return await this.monitoringService.deleteEntry(id);
+    }
+
+    @Delete('admin/restore/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async restoreEntry(@Param('id') id:number){
+        return await this.monitoringService.restoreEntry(id);
     }
 }

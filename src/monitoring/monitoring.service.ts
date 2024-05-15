@@ -34,11 +34,11 @@ export class MonitoringService {
 
     async updateEntry(wellId: string, id: number, updateMonitoringDto: UpdateMonitoringDto) {
         const entry = await this.findOneEntryById(id);
-        
+
         if (entry.wellId != wellId) {
             throw new ForbiddenException(
                 customMessage(HttpStatus.FORBIDDEN, "Entrada especificada não pertence a este poço!", {})
-            )            
+            )
         }
         try {
             await this.monitRepository.update(entry.id, updateMonitoringDto);
@@ -66,5 +66,23 @@ export class MonitoringService {
             )
         }
         return entry;
+    }
+    async restoreEntry(id: number) {
+        const entry = await this.findOneEntryById(id);
+        console.log(entry)
+        try {
+            await this.monitRepository.softRemove(entry);
+        } catch (error) {
+            InternalServerExcp(error)
+        }
+    }
+    async deleteEntry(id: number) {
+        const entry = await this.findOneEntryById(id);
+
+        try {
+            await this.monitRepository.restore(entry);
+        } catch (error) {
+            InternalServerExcp(error)
+        }
     }
 }
