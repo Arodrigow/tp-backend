@@ -3,7 +3,7 @@ import { CreateActivityDto } from './dto/create-activities.dto';
 import { UpdateActivityDto } from './dto/update-activities.dto';
 import { Activities } from './entities/activities.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
+import { In, IsNull, Not, Repository } from 'typeorm';
 import InternalServerExcp from 'src/shared/errors/internalServer.error';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
@@ -44,19 +44,44 @@ export class ActivitiesService {
         }
     }
 
-    async findActivity(id: string) {
-        const activity = await this.getActivityById(id);
-        if(!activity){
-            throw new NotFoundException(
-                customMessage(HttpStatus.NOT_FOUND, "Atividade especificada não foi encontrada", {})
+    async findActivity(id?: string, activityIds?: string) {
+
+        if (!!!activityIds) {
+            const activity = await this.getActivityById(id);
+            if (!activity) {
+                throw new NotFoundException(
+                    customMessage(HttpStatus.NOT_FOUND, "Atividade especificada não foi encontrada", {})
+                )
+            }
+
+            return customMessage(HttpStatus.OK,
+                `Atividade de Processo nº: ${activity.processo}`,
+                new SerializedActivity(activity)
             )
         }
 
-        return customMessage(HttpStatus.OK,
-            `Atividade de Processo nº: ${activity.processo}`,
-            new SerializedActivity(activity)
-        )
+        if (!!activityIds) {
+            try {
+                const strOrd = JSON.parse(activityIds);
+                const activities = await this.activitiesRepository.find(
+                    {
+                        where:{
+                            id:In(strOrd)
+                        }
+                    }
+                )
+                return customMessage(HttpStatus.OK,
+                    `Lista de poços`,
+                    activities.map(activity => new SerializedActivity(activity))
+                )
+
+            } catch (error) {
+                InternalServerExcp(error);
+            }
+        }
     }
+
+
     async adminFindActivity(id: string) {
         var activity: Activities = new Activities()
         try {
@@ -87,14 +112,14 @@ export class ActivitiesService {
 
     async updateActivity(id: string, updateActivityDto: UpdateActivityDto) {
         const activity = await this.getActivityById(id);
-        if(!activity){
+        if (!activity) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Atividade especificada não foi encontrada", {})
             )
         }
 
         try {
-            await this.activitiesRepository.update(activity.id, {...updateActivityDto})
+            await this.activitiesRepository.update(activity.id, { ...updateActivityDto })
             return customMessage(HttpStatus.OK, "Atividade atualizada com sucesso.", {})
         } catch (error) {
             InternalServerExcp(error)
@@ -103,7 +128,7 @@ export class ActivitiesService {
     }
     async deleteActivity(id: string) {
         const activity = await this.getActivityById(id);
-        if(!activity){
+        if (!activity) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Atividade especificada não foi encontrada", {})
             )
@@ -119,8 +144,8 @@ export class ActivitiesService {
         }
     }
     async restoreActivity(id: string) {
-        const activity = await this.activitiesRepository.findOne({withDeleted: true, where:{id,deletedAt: Not(IsNull())}});
-        if(!activity){
+        const activity = await this.activitiesRepository.findOne({ withDeleted: true, where: { id, deletedAt: Not(IsNull()) } });
+        if (!activity) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Atividade especificada não existe ou não foi deletada", {})
             )
@@ -180,7 +205,7 @@ export class ActivitiesService {
         const order = getOrder(sort);
 
         const [languages, total] = await this.activitiesRepository.findAndCount({
-            withDeleted:true,
+            withDeleted: true,
             where,
             order,
             take: limit,

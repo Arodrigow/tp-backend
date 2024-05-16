@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CreateActivityDto } from './dto/create-activities.dto';
 import { ActivitiesService } from './activities.service';
 import { UpdateActivityDto } from './dto/update-activities.dto';
@@ -33,8 +33,8 @@ export class ActivitiesController {
     }
 
     @Get(':id')
-    async findActivity(@Param('id') id:string){
-        return await this.activitiesService.findActivity(id);
+    async findActivity(@Param('id') id:string, @Query('activityIds') activityIds:string){
+        return await this.activitiesService.findActivity(id,activityIds);
     }
 
     @Get('admin/:id')

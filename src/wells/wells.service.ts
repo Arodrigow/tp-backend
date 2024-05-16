@@ -197,7 +197,7 @@ export class WellsService {
                 const strOrd = JSON.parse(wellIds);
 
                 const wells = await this.wellRepository.find({where:{
-                    ordinance: In(strOrd)
+                    id: In(strOrd)
                 }})
                 return customMessage(HttpStatus.OK,
                     `Lista de poços`,
