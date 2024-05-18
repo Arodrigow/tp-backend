@@ -12,6 +12,7 @@ import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { RoleGuard } from 'src/auth/guards/role.guard';
+import { CreateAdminUserDto } from './dto/create-useradmin.dto';
 
 
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,6 +27,13 @@ export class UsersController {
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto){
        return await this.usersService.createUser(createUserDto);
+    }
+
+    @Post('admin')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminCreateUser(@Body() createAdminUserDto: CreateAdminUserDto){
+       return await this.usersService.adminCreateUser(createAdminUserDto);
     }
 
     @Get(':id')

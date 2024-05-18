@@ -13,6 +13,7 @@ import { Sorting } from 'src/search/decorators/sortParams.decorator';
 import { Filtering } from 'src/search/decorators/filterParams.decorator';
 import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
 import { AdminSerializedUser } from './types/adminSerializedUser';
+import { CreateAdminUserDto } from './dto/create-useradmin.dto';
 
 @Injectable()
 export class UsersService {
@@ -54,6 +55,50 @@ export class UsersService {
         const password = encodePassword(createUserDto.password);
 
         const newUser = this.userRepository.create({ ...createUserDto, password });
+
+
+        try {
+            const user = this.userRepository.save(newUser)
+            return customMessage(HttpStatus.OK, 'Conta criada com sucesso', {})
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+
+    async adminCreateUser(createAdminUserDto: CreateAdminUserDto) {
+
+        const userEmail = createAdminUserDto.email;
+        const userCPF = createAdminUserDto.cpf;
+        //Check if email belongs to deleted account
+        if (await this.findDeletedByEmail(userEmail)) {
+            throw new ConflictException(
+                customMessage(HttpStatus.CONFLICT, 'Este email pertence à uma conta que foi deletada ou suspensa', {})
+            );
+        }
+
+        //Check if email belongs to deleted account
+        if (await this.findDeletedByCpf(userCPF)) {
+            throw new ConflictException(
+                customMessage(HttpStatus.CONFLICT, 'Este CPF pertence à uma conta que foi deletada ou suspensa', {})
+            );
+        }
+
+        //checking if e-mail already exists
+        if (await this.findByEmail(userEmail)) {
+            throw new ConflictException(
+                customMessage(HttpStatus.CONFLICT, 'Este email já está em uso', {})
+            );
+        }
+        //checking if CPF already exists
+        if (await this.findByCPF(userCPF)) {
+            throw new ConflictException(
+                customMessage(HttpStatus.CONFLICT, 'Este CPF já está em uso', {})
+            );
+        }
+        //enconde password
+        const password = encodePassword(createAdminUserDto.password);
+
+        const newUser = this.userRepository.create({ ...createAdminUserDto, password });
 
 
         try {
