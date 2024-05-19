@@ -67,20 +67,12 @@ export class MonitoringService {
         }
         return entry;
     }
-    async restoreEntry(id: number) {
-        const entry = await this.findOneEntryById(id);
-        console.log(entry)
-        try {
-            await this.monitRepository.softRemove(entry);
-        } catch (error) {
-            InternalServerExcp(error)
-        }
-    }
+
     async deleteEntry(id: number) {
         const entry = await this.findOneEntryById(id);
 
         try {
-            await this.monitRepository.restore(entry);
+            await this.monitRepository.remove(entry);
         } catch (error) {
             InternalServerExcp(error)
         }

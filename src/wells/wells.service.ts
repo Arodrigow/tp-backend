@@ -271,7 +271,7 @@ export class WellsService {
             )
         }
         try {
-            await this.wellRepository.restore(well.id);
+            await this.wellRepository.recover(well);
             return customMessage(HttpStatus.OK,
                 "Poço recuperado com sucesso",
                 {}

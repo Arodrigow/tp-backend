@@ -34,11 +34,4 @@ export class MonitoringController {
     async deleteEntry(@Param('id') id:number){
         return await this.monitoringService.deleteEntry(id);
     }
-
-    @Delete('admin/restore/:id')
-    @Roles(Role.ADMIN)
-    @UseGuards(AuthGuard, RoleGuard)
-    async restoreEntry(@Param('id') id:number){
-        return await this.monitoringService.restoreEntry(id);
-    }
 }
