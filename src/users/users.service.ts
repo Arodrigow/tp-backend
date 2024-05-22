@@ -35,7 +35,7 @@ export class UsersService {
         //Check if email belongs to deleted account
         if (await this.findDeletedByCpf(userCPF)) {
             throw new ConflictException(
-                customMessage(HttpStatus.CONFLICT, 'Este CPF pertence à uma conta que foi deletada ou suspensa', {})
+                customMessage(HttpStatus.CONFLICT, 'Este documento pertence à uma conta que foi deletada ou suspensa', {})
             );
         }
 
@@ -48,7 +48,7 @@ export class UsersService {
         //checking if CPF already exists
         if (await this.findByCPF(userCPF)) {
             throw new ConflictException(
-                customMessage(HttpStatus.CONFLICT, 'Este CPF já está em uso', {})
+                customMessage(HttpStatus.CONFLICT, 'Este documento já está em uso', {})
             );
         }
         //enconde password
@@ -79,7 +79,7 @@ export class UsersService {
         //Check if email belongs to deleted account
         if (await this.findDeletedByCpf(userCPF)) {
             throw new ConflictException(
-                customMessage(HttpStatus.CONFLICT, 'Este CPF pertence à uma conta que foi deletada ou suspensa', {})
+                customMessage(HttpStatus.CONFLICT, 'Este documento pertence à uma conta que foi deletada ou suspensa', {})
             );
         }
 
@@ -92,7 +92,7 @@ export class UsersService {
         //checking if CPF already exists
         if (await this.findByCPF(userCPF)) {
             throw new ConflictException(
-                customMessage(HttpStatus.CONFLICT, 'Este CPF já está em uso', {})
+                customMessage(HttpStatus.CONFLICT, 'Este documento já está em uso', {})
             );
         }
         //enconde password
