@@ -61,10 +61,13 @@ export class Activities {
     long: number;
 
     @Column()
-    dataSla: number;
+    muni: string;
 
     @Column()
-    vigLicAng: number;
+    situ: string;
+
+    @Column()
+    dataFinal: Date;    
 
     @PrimaryGeneratedColumn('uuid')
     id: string = uuidv4();

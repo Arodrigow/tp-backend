@@ -17,8 +17,9 @@ export class SerializedActivity{
     undAnalis: string;
     lat: number;
     long: number;
-    dataSla: number;
-    vigLicAng: number;
+    muni:string;
+    situ:string;
+    dataFinal:Date;
 
     @Exclude()
     createdAt:Date;

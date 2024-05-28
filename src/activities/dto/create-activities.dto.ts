@@ -16,6 +16,7 @@ export class CreateActivityDto {
     undAnalis?: string;
     lat?: number;
     long?: number;
-    dataSla?: number;
-    vigLicAng?: number;
+    muni?:string;
+    dataFinal?:Date;
+    situ?:string;
 }
