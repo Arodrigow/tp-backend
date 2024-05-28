@@ -7,8 +7,6 @@ export class SerializedUser {
     email:string;
     phone_number:string;
     deletedAt:Date;
-
-    @Exclude()
     cpf:string;
 
     @Exclude()

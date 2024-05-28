@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wells } from './entities/well.entity';
 import { In, IsNull, Not, Repository } from 'typeorm';
@@ -18,7 +18,7 @@ import { getOrder, getWhere } from '../search/helpers/queryHelper';
 export class WellsService {
     constructor(
         @InjectRepository(Wells) private readonly wellRepository: Repository<Wells>,
-        private readonly userService: UsersService
+        @Inject(forwardRef(() => UsersService)) private readonly userService: UsersService
     ) { }
 
     async createWell(createWellDto: CreateWellDto) {
@@ -113,6 +113,19 @@ export class WellsService {
         try {
             await this.wellRepository.update(well.id, { userId, hasActiveUser });
             return customMessage(HttpStatus.OK, "Propriedade do poço alterada com sucesso.", {})
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
+    
+    async updateOwnershipDeletedUser(userId:string){
+        const userWells: Array<Wells> = await this.wellRepository.find({ where: [{ userId }] });
+        try {
+            if(userWells){
+                userWells.forEach((well) => {
+                    this.wellRepository.update(well.id, {hasActiveUser:false, userId:null})
+                })
+            }            
         } catch (error) {
             InternalServerExcp(error);
         }

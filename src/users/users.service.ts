@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpStatus, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
@@ -14,11 +14,14 @@ import { Filtering } from 'src/search/decorators/filterParams.decorator';
 import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
 import { AdminSerializedUser } from './types/adminSerializedUser';
 import { CreateAdminUserDto } from './dto/create-useradmin.dto';
+import { WellsService } from 'src/wells/wells.service';
 
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectRepository(Users) private readonly userRepository: Repository<Users>
+        @InjectRepository(Users) private readonly userRepository: Repository<Users>,
+        @Inject(forwardRef(() => WellsService))
+        private readonly wellService: WellsService
     ) { }
 
     async createUser(createUserDto: CreateUserDto) {
@@ -209,9 +212,10 @@ export class UsersService {
     
     async softDeleteUser(id: string){
         const user = await this.getUserById(id);
-
+        
         try {
             await this.userRepository.softRemove(user);
+            await this.wellService.updateOwnershipDeletedUser(user.id);
             return customMessage(HttpStatus.OK,
                 "Usuário deletado com sucesso",
                 {}
