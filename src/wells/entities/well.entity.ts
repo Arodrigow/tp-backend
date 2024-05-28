@@ -2,13 +2,27 @@ import { Monitoring } from "src/monitoring/entities/monitoring.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid'
 
-@Entity({name:'wells'})
+@Entity({ name: 'wells' })
 export class Wells {
 
   @Column(
     {
+      nullable: true
+    }
+  )
+  supram: string;
+
+  @Column(
+    {
+      nullable: true
+    }
+  )
+  muni: string;
+
+  @Column(
+    {
       type: "numeric",
-      nullable:true
+      nullable: true
     }
   )
   LON: number;
@@ -16,103 +30,85 @@ export class Wells {
   @Column(
     {
       type: "numeric",
-      nullable:true
+      nullable: true
     })
   LAT: number;
 
   @Column({
-    nullable:true
+    nullable: true
   })
   ordinance: number;
 
   @Column(
     {
       type: "numeric",
-      nullable:true
+      nullable: true
     })
   NE: number;
 
   @Column(
     {
       type: "numeric",
-      nullable:true
+      nullable: true
     })
   ND: number;
-
-  @Column({
-    nullable:true
-  })
-  statuspa: string;
-
-  @Column({
-    nullable:true
-  })
-  tipoUso: string;
-
-  @Column({
-    nullable:true
-  })
-  modUso: string;
 
   @Column(
     {
       type: "numeric",
-      nullable:true
+      nullable: true
     })
   vaz: number;
 
   @Column(
     {
       type: "numeric",
-      nullable:true
+      nullable: true
     })
   tCap: number;
 
   @Column({
-    nullable:true
+    type: "numeric",
+    nullable: true
   })
-  profPc: string;
+  profPc: number;
 
   @Column({
-    nullable:true
+    type: "numeric",
+    nullable: true
   })
-  diaPcmm: string;
+  diaPcmm: number;
 
   @Column({
-    nullable:true
+    nullable: true
+  })
+  modUso: string;
+
+  @Column({
+    nullable: true
   })
   finUso: string;
 
   @Column({
-    nullable:true
+    nullable: true
   })
-  tpoConsu: string;
+  tipoReg: string;  
 
   @Column({
-    nullable:true
+    nullable: true
   })
-  siglaCh: string;
+  situ: string;  
 
   @Column({
-    nullable:true
+    nullable: true
   })
-  baciaFede: string;
-
-  @Column({
-    nullable:true
-  })
-  ueg: string;
-
-  @Column({
-    nullable:true
-  })
-  chNome: string;
+  dataVenc: Date;  
 
   @PrimaryGeneratedColumn('uuid')
   id: string = uuidv4();
 
   @Column({
-    nullable:true
+    nullable: true
   })
   userId: string;
 
@@ -121,8 +117,8 @@ export class Wells {
 
   @OneToMany(() => Monitoring, (monitoring) => monitoring.well,
     {
-      cascade: ["soft-remove","update","recover"],
-      eager:true
+      cascade: ["soft-remove", "update", "recover"],
+      eager: true
     })
   monitoring: Monitoring;
 

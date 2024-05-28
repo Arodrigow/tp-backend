@@ -1,23 +1,21 @@
 export class CreateWellDto {
 
+    supram?:string;
+    muni?:string;
     LON?: number;
     LAT?: number;
-    ordinance: number;
+    ordinance?: number;
     NE?: number;
     ND?: number;
-    statuspa?: string;
-    tipoUso?: string;
-    modUso?: string;
     vaz?: number;
     tCap?: number;
-    profPc?: string;
-    diaPcmm?: string;
+    profPc?: number;
+    diaPcmm?: number;
+    modUso?: string;
     finUso?: string;
-    tpoConsu?: string;
-    siglaCh?: string;
-    baciaFede?: string;
-    ueg?: string;
-    chNome?: string;
     userId?: string
     hasActiveUser?: boolean;
+    tipoReg?: string;
+    dataVenc?: Date;
+    situ?:string;
 }

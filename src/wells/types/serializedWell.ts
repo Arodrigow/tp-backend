@@ -3,31 +3,29 @@ import { Exclude } from "class-transformer";
 export class SerializedWell{
 
     id: string;
+    supram:string;
+    muni:string;
+    ordinance: number;
     LON: number;
     LAT: number;
-    ordinance: number;
     NE: number;
     ND: number;
-    statuspa: string;
-    tipoUso: string;
-    modUso: string;
     vaz: number;
     tCap: number;
-    profPc: string;
-    diaPcmm: string;
+    profPc: number;
+    diaPcmm: number;
+    modUso: string;
     finUso: string;
-    tpoConsu: string;
-    siglaCh: string;
-    baciaFede: string;
-    ueg: string;
-    chNome: string;
     hasActiveUser: boolean;
-    updatedAt: Date;
     userId: string;
-
+    tipoReg: string;
+    dataVenc: Date;
+    situ:string;
+    updatedAt: Date;
+    
     @Exclude()
     createdAt:Date;
-
+    
     @Exclude()
     deletedAt:Date;
 
