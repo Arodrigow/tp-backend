@@ -88,14 +88,20 @@ export class Activities1714348407186 implements MigrationInterface {
                     isNullable: true
                 },
                 {
-                    name:'dataSla',
-                    type:'INT',
+                    name:'muni',
+                    type:'TEXT',
                     isNullable: true
                 },
                 {
-                    name:'vigLicAng',
-                    type:'INT',
+                    name:'dataFinal',
+                    type:'TIMESTAMP',
                     isNullable: true
+                },
+                {
+                    name:'situ',
+                    type:'TEXT',
+                    default: "'ATIVO'",
+                    isNullable: false,
                 },
                 {
                     name: 'id',

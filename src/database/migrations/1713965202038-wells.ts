@@ -8,6 +8,21 @@ export class Wells1713965202038 implements MigrationInterface {
             name: 'wells',
             columns: [
                 {
+                    name:'supram',
+                    type:'TEXT',
+                    isNullable:true
+                },
+                {
+                    name:'muni',
+                    type:'TEXT',
+                    isNullable:true
+                },
+                {
+                    name:'ordinance',
+                    type:'BIGINT',
+                    isNullable: false
+                },
+                {
                     name:'LON',
                     type:'NUMERIC(10, 8)',
                     isNullable: true
@@ -18,11 +33,6 @@ export class Wells1713965202038 implements MigrationInterface {
                     isNullable: true
                 },
                 {
-                    name:'ordinance',
-                    type:'BIGINT',
-                    isNullable: false
-                },
-                {
                     name:'NE',
                     type:'NUMERIC(5, 2)',
                     isNullable: true
@@ -30,21 +40,6 @@ export class Wells1713965202038 implements MigrationInterface {
                 {
                     name:'ND',
                     type:'NUMERIC(5, 2)',
-                    isNullable: true
-                },
-                {
-                    name:'statuspa',
-                    type:'TEXT',
-                    isNullable: true
-                },
-                {
-                    name:'tipoUso',
-                    type:'TEXT',
-                    isNullable: true
-                },
-                {
-                    name:'modUso',
-                    type:'TEXT',
                     isNullable: true
                 },
                 {
@@ -59,11 +54,16 @@ export class Wells1713965202038 implements MigrationInterface {
                 },
                 {
                     name:'profPc',
-                    type:'TEXT',
+                    type:'NUMERIC(6, 2)',
                     isNullable: true
                 },
                 {
                     name:'diaPcmm',
+                    type:'NUMERIC(6, 2)',
+                    isNullable: true
+                },
+                {
+                    name:'modUso',
                     type:'TEXT',
                     isNullable: true
                 },
@@ -73,30 +73,15 @@ export class Wells1713965202038 implements MigrationInterface {
                     isNullable: true
                 },
                 {
-                    name:'tpoConsu',
+                    name:'tipoReg',
                     type:'TEXT',
                     isNullable: true
                 },
                 {
-                    name:'siglaCh',
-                    type:'TEXT',
+                    name:'dataVenc',
+                    type:'TIMESTAMP',
                     isNullable: true
                 },
-                {
-                    name:'baciaFede',
-                    type:'TEXT',
-                    isNullable: true
-                },
-                {
-                    name:'ueg',
-                    type:'TEXT',
-                    isNullable: true
-                },
-                {
-                    name:'chNome',
-                    type:'TEXT',
-                    isNullable: true
-                },                
                 {
                     name: 'id',
                     type: 'uuid',
@@ -114,6 +99,12 @@ export class Wells1713965202038 implements MigrationInterface {
                     name: 'hasActiveUser',
                     type: 'boolean',
                     default: false
+                },
+                {
+                    name: 'situ',
+                    type: 'TEXT',
+                    default: "'ATIVO'",
+                    isNullable: false,
                 },
                 {
                     name: 'createdAt',
