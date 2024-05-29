@@ -21,8 +21,8 @@ export class WellsController {
         private readonly wellService:WellsService
     ){}
 
-    @Post()
-    @Roles(Role.USER)
+    @Post('admin')
+    @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
     async craeteWell(@Body() createWellDto: CreateWellDto){
         return await this.wellService.createWell(createWellDto);
