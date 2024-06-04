@@ -1314,6 +1314,7 @@ export class PopulateActivities1714403406773 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DELETE FROM "activities"`)
     }
 
 }
