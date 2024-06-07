@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import customMessage from 'src/shared/responses/customMessage.response';
 import { comparePasswords } from 'src/shared/utils/bcrypt';
 import { UsersService } from 'src/users/users.service';
+import censorDocuments from './utils/censorDocuments';
 
 @Injectable()
 export class AuthService {    
@@ -26,7 +27,9 @@ export class AuthService {
                 customMessage(HttpStatus.UNAUTHORIZED, 'Senha incorreta', {})
             )
         }
-        const payload = { sub: user.id, name:user.name, email: user.email, phone_number: user.phone_number, role:user.role};
+
+        
+        const payload = { sub: user.id, name:user.name, email: user.email, phone_number: user.phone_number, role:user.role, cpf: censorDocuments(user.cpf)};
 
         return customMessage(HttpStatus.CREATED, 'token created successfully', {
             ...payload,
