@@ -163,6 +163,17 @@ export class UsersService {
             InternalServerExcp(error);
         }
     }
+
+    async adminResetPassword(id: string) {
+        const user = await this.getUserById(id);
+        const newPassword =  encodePassword(user.cpf);
+        try {
+            await this.userRepository.update(id, {password:newPassword});
+            return customMessage(HttpStatus.OK, 'Usuário atualizado com sucesso', {})
+        } catch (error) {
+            InternalServerExcp(error);
+        }
+    }
     
     async getUserById(id: string) {
         var user: Users = new Users()

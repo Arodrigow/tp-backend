@@ -56,6 +56,13 @@ export class UsersController {
         return await this.usersService.updateUser(id, updateUserDto);
     }
 
+    @Patch('resetp/:id')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminResetPassword(@Param('id') id: string){
+        return await this.usersService.adminResetPassword(id);
+    }
+
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
     @Delete('delete/:id')
