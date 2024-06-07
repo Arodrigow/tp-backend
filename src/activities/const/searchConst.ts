@@ -1,0 +1,18 @@
+export const activitySearchConst = [
+    'processo',
+    'munSolic',
+    'codAtivPrim',
+    'riscoAr',
+    'riscoAgua',
+    'riscoSolo',
+    'riscoTotal',
+    'list',
+    'descAtivPrim',
+    'classe',
+    'fatLocRes',
+    'modLic',
+    'faseLic',
+    'undAnalis',
+    'muni',
+    'situ',
+]

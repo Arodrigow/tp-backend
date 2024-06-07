@@ -26,8 +26,8 @@ export const PaginationParams = createParamDecorator((data, ctx: ExecutionContex
         throw new BadRequestException('Invalid pagination params');
     }
     // do not allow to fetch large slices of the dataset
-    if (size > 100) {
-        throw new BadRequestException('Invalid pagination params: Max size is 100');
+    if (size > 200) {
+        throw new BadRequestException('Invalid pagination params: Max size is 200');
     }
 
     // calculate pagination parameters

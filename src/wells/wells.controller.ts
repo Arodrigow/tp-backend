@@ -12,6 +12,7 @@ import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
+import { wellSearchConst } from './const/searchConstants';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('wells')
@@ -91,8 +92,8 @@ export class WellsController {
     @Get('search')
     async getWells(
         @PaginationParams() paginationParams: Pagination,
-        @SortingParams(['NE', 'ND', 'profPc', 'chNome']) sort?: Sorting,
-        @FilteringParams(['NE', 'ND', 'profPc', 'chNome'])  filter?: Filtering
+        @SortingParams(wellSearchConst) sort?: Sorting,
+        @FilteringParams(wellSearchConst)  filter?: Filtering
     ):Promise<PaginatedResource<Partial<Wells>>>{
         return await this.wellService.searchWells(paginationParams, sort, filter);
     }
@@ -102,8 +103,8 @@ export class WellsController {
     @UseGuards(AuthGuard, RoleGuard)
     async adminGetWells(
         @PaginationParams() paginationParams: Pagination,
-        @SortingParams(['NE', 'ND', 'profPc', 'chNome']) sort?: Sorting,
-        @FilteringParams(['NE', 'ND', 'profPc', 'chNome'])  filter?: Filtering
+        @SortingParams(wellSearchConst) sort?: Sorting,
+        @FilteringParams(wellSearchConst)  filter?: Filtering
     ):Promise<PaginatedResource<Partial<Wells>>>{
         return await this.wellService.adminSearchWells(paginationParams, sort, filter);
     }

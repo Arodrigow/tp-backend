@@ -11,6 +11,7 @@ import { Sorting, SortingParams } from 'src/search/decorators/sortParams.decorat
 import { Filtering, FilteringParams } from 'src/search/decorators/filterParams.decorator';
 import { Activities } from './entities/activities.entity';
 import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
+import { activitySearchConst } from './const/searchConst';
 
 @Controller('activities')
 export class ActivitiesController {
@@ -68,8 +69,8 @@ export class ActivitiesController {
     @Get('search')
     async getActivities(
         @PaginationParams() paginationParams: Pagination,
-        @SortingParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic']) sort?: Sorting,
-        @FilteringParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic'])  filter?: Filtering
+        @SortingParams(activitySearchConst) sort?: Sorting,
+        @FilteringParams(activitySearchConst)  filter?: Filtering
     ):Promise<PaginatedResource<Partial<Activities>>>{
         return await this.activitiesService.searchActivities(paginationParams, sort, filter);
     }
@@ -79,8 +80,8 @@ export class ActivitiesController {
     @UseGuards(AuthGuard, RoleGuard)
     async adminGetActivities(
         @PaginationParams() paginationParams: Pagination,
-        @SortingParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic']) sort?: Sorting,
-        @FilteringParams(['riscoTotal', 'list', 'descAtivPrim', 'munSolic'])  filter?: Filtering
+        @SortingParams(activitySearchConst) sort?: Sorting,
+        @FilteringParams(activitySearchConst)  filter?: Filtering
     ):Promise<PaginatedResource<Partial<Activities>>>{
         return await this.activitiesService.adminSearchActivities(paginationParams, sort, filter);
     }
