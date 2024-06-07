@@ -157,7 +157,19 @@ export class UsersService {
     async updateUser(id: string, updateUserDto: UpdateUserDto) {
         await this.getUserById(id);
         try {
+            if (updateUserDto.password) {
+                await this.userRepository.update(id,
+                    {
+                        password: encodePassword(updateUserDto.password),
+                        name: updateUserDto.name,
+                        email: updateUserDto.email,
+                        phone_number: updateUserDto.phone_number
+                    });
+                return customMessage(HttpStatus.OK, 'Usuário atualizado com sucesso', {})
+            }
+            
             await this.userRepository.update(id, updateUserDto);
+
             return customMessage(HttpStatus.OK, 'Usuário atualizado com sucesso', {})
         } catch (error) {
             InternalServerExcp(error);
@@ -166,15 +178,15 @@ export class UsersService {
 
     async adminResetPassword(id: string) {
         const user = await this.getUserById(id);
-        const newPassword =  encodePassword(user.cpf);
+        const newPassword = encodePassword(user.cpf);
         try {
-            await this.userRepository.update(id, {password:newPassword});
-            return customMessage(HttpStatus.OK, 'Usuário atualizado com sucesso', {})
+            await this.userRepository.update(id, { password: newPassword });
+            return customMessage(HttpStatus.OK, 'Senha de usuário atualizada com sucesso atualizado com sucesso', {})
         } catch (error) {
             InternalServerExcp(error);
         }
     }
-    
+
     async getUserById(id: string) {
         var user: Users = new Users()
         try {
@@ -210,7 +222,7 @@ export class UsersService {
         return await this.userRepository.findOneBy({ email });
     }
 
-    async findByCPF(cpf: string) {        
+    async findByCPF(cpf: string) {
         var user: Users = new Users()
         try {
             user = await this.userRepository.findOneBy({ cpf })
@@ -220,10 +232,10 @@ export class UsersService {
 
         return user;
     }
-    
-    async softDeleteUser(id: string){
+
+    async softDeleteUser(id: string) {
         const user = await this.getUserById(id);
-        
+
         try {
             await this.userRepository.softRemove(user);
             await this.wellService.updateOwnershipDeletedUser(user.id);
@@ -236,18 +248,18 @@ export class UsersService {
         }
     }
 
-    async restoreUser(id: string){
+    async restoreUser(id: string) {
         const user = await this.userRepository.findOne({
             withDeleted: true,
             where: { id, deletedAt: Not(IsNull()) }
         });
 
-        if(!user){
+        if (!user) {
             throw new NotFoundException(
                 customMessage(HttpStatus.NOT_FOUND, "Usuário especificado não existe ou não foi deletado.", {})
             )
         }
-        
+
         try {
             await this.userRepository.restore(id);
             return customMessage(HttpStatus.OK,
@@ -268,7 +280,7 @@ export class UsersService {
         const order = getOrder(sort);
 
         const [languages, total] = await this.userRepository.findAndCount({
-            withDeleted:true,
+            withDeleted: true,
             where,
             order,
             take: limit,
