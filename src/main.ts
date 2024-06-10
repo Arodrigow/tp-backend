@@ -2,6 +2,7 @@ import {loadConfig} from './shared/utils/config';
 loadConfig();
 
 import { NestFactory } from '@nestjs/core';
+import helmet from '@fastify/helmet'
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -14,6 +15,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
+  app.register(helmet);
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT || 3000);
