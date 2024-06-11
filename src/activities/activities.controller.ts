@@ -13,7 +13,7 @@ import { Activities } from './entities/activities.entity';
 import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
 import { activitySearchConst } from './const/searchConst';
 
-@Controller('/api/activities')
+@Controller('siimasapi/activities')
 export class ActivitiesController {
 
     constructor(

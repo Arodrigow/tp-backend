@@ -15,7 +15,7 @@ import { RoleGuard } from 'src/auth/guards/role.guard';
 import { wellSearchConst } from './const/searchConstants';
 
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('api/wells')
+@Controller('siimasapi/wells')
 export class WellsController {
 
     constructor(

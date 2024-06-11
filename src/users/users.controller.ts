@@ -18,7 +18,7 @@ import { userSearchConst } from './const/searchConstants';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseFilters(HttpExceptionFilter)
-@Controller('api/users')
+@Controller('siimasapi/users')
 export class UsersController {
 
     constructor(
