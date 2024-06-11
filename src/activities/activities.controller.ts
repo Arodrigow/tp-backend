@@ -28,7 +28,7 @@ export class ActivitiesController {
         return await this.activitiesService.createActivity(createActivityDto);
     }
 
-    @Get()
+    @Get('/api')
     async findAll(){
         return await this.activitiesService.findAll();
     }
