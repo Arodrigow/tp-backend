@@ -13,7 +13,7 @@ import { Activities } from './entities/activities.entity';
 import { PaginatedResource } from 'src/search/dto/paginated-resources.dto';
 import { activitySearchConst } from './const/searchConst';
 
-@Controller('activities')
+@Controller('/api/activities')
 export class ActivitiesController {
 
     constructor(
@@ -28,7 +28,7 @@ export class ActivitiesController {
         return await this.activitiesService.createActivity(createActivityDto);
     }
 
-    @Get('/api')
+    @Get('')
     async findAll(){
         return await this.activitiesService.findAll();
     }
