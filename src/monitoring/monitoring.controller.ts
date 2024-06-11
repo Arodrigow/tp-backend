@@ -7,7 +7,7 @@ import { Role } from 'src/auth/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 
-@Controller('monitoring')
+@Controller('api/monitoring')
 export class MonitoringController {
     constructor(
         private readonly monitoringService: MonitoringService
