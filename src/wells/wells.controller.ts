@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Logger, Param, Patch, Post, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WellsService } from './wells.service';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateUserOwnershipDto } from './dto/updateOwnership-well.dto';
@@ -63,6 +63,13 @@ export class WellsController {
     @Get('categories')
     async findUniqueCategories(){
         return await this.wellService.findUniqueCategories();
+    }
+
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    @Get('admin/categories')
+    async adminFindUniqueCategories(){
+        return await this.wellService.adminFindUniqueCategories();
     }
 
     @Roles(Role.USER)

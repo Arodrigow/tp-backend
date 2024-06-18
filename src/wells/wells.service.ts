@@ -118,6 +118,32 @@ export class WellsService {
         )
     }
 
+    async adminFindUniqueCategories() {
+        const muni:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`muni`).distinct(true).getRawMany();
+        const supram:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"supram"`).distinct(true).getRawMany();        
+        const modUso:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"modUso"`).distinct(true).getRawMany();        
+        const finUso:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"finUso"`).distinct(true).getRawMany();        
+        const tipoReg:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"tipoReg"`).distinct(true).getRawMany();        
+        const userId:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"userId"`).distinct(true).getRawMany();        
+        const hasActiveUser:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"hasActiveUser"`).distinct(true).getRawMany();        
+        const situ:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"situ"`).distinct(true).getRawMany();        
+
+        return customMessage(
+            HttpStatus.OK,
+            `Admin search wells lists`,
+            {
+                muni:objectToArray(muni),
+                supram:objectToArray(supram),
+                modUso:objectToArray(modUso),
+                finUso:objectToArray(finUso),
+                tipoReg:objectToArray(tipoReg),
+                userId: objectToArray(userId),
+                hasActiveUser: objectToArray(hasActiveUser),
+                situ: objectToArray(situ),
+            }
+        )
+    }
+
     async updateUserOwnership(wellId: string, { userId, hasActiveUser }: UpdateUserOwnershipDto) {
 
         const well = await this.getOneWell(wellId);

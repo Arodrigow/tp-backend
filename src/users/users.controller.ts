@@ -50,6 +50,13 @@ export class UsersController {
         return await this.usersService.adminFindUserById(id);
     }
 
+    @Get('admin/categories')
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RoleGuard)
+    async adminFindCategories(){
+        return await this.usersService.adminFindCategories()
+    }
+
     @Patch(':id')
     @Roles(Role.USER)
     @UseGuards(AuthGuard, RoleGuard)

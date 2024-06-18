@@ -15,6 +15,7 @@ import { getOrder, getWhere } from 'src/search/helpers/queryHelper';
 import { AdminSerializedUser } from './types/adminSerializedUser';
 import { CreateAdminUserDto } from './dto/create-useradmin.dto';
 import { WellsService } from 'src/wells/wells.service';
+import objectToArray from 'src/shared/utils/objectToArray';
 
 @Injectable()
 export class UsersService {
@@ -152,6 +153,29 @@ export class UsersService {
         } catch (error) {
             InternalServerExcp(error);
         }
+    }
+    
+    async adminFindCategories() {
+        
+        const id: Array<Object> = await this.userRepository.createQueryBuilder('users').select(`id`).distinct(true).getRawMany();
+        const name: Array<Object> = await this.userRepository.createQueryBuilder('users').select(`name`).distinct(true).getRawMany();
+        const cpf: Array<Object> = await this.userRepository.createQueryBuilder('users').select(`cpf`).distinct(true).getRawMany();
+        const email: Array<Object> = await this.userRepository.createQueryBuilder('users').select(`email`).distinct(true).getRawMany();
+        const phone_number: Array<Object> = await this.userRepository.createQueryBuilder('users').select(`phone_number`).distinct(true).getRawMany();
+        const role: Array<Object> = await this.userRepository.createQueryBuilder('users').select(`role`).distinct(true).getRawMany();
+    
+        return customMessage(
+            HttpStatus.OK,
+            `Admin search users lists`,
+            {
+                id:objectToArray(id),
+                name: objectToArray(name),
+                cpf: objectToArray(cpf),
+                email: objectToArray(email),
+                phone_number: objectToArray(phone_number),
+                role: objectToArray(role)
+            }
+        )
     }
 
     async updateUser(id: string, updateUserDto: UpdateUserDto) {
