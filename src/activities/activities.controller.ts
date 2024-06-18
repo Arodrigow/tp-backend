@@ -45,6 +45,11 @@ export class ActivitiesController {
         return await this.activitiesService.adminFindActivity(id);
     }
 
+    @Get('categories')
+    async findUniqueCategories(){
+        return await this.activitiesService.findUniqueCategories();
+    }
+
     @Patch(':id')
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RoleGuard)
