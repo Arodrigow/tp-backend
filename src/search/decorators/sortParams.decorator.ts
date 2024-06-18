@@ -16,7 +16,7 @@ type MyRequest = FastifyRequest<
 export const SortingParams = createParamDecorator((validParams, ctx: ExecutionContext): Sorting => {
     const req: MyRequest = ctx.switchToHttp().getRequest();
     const sort = decodeURIComponent(req.query.sort as string);
-    console.log(sort)
+    
     if (!sort) return null;
     
     // check if the valid params sent is an array
