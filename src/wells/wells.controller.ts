@@ -60,6 +60,11 @@ export class WellsController {
         return await this.wellService.listWellsByUser(userId);
     }
 
+    @Get('categories')
+    async findUniqueCategories(){
+        return await this.wellService.findUniqueCategories();
+    }
+
     @Roles(Role.USER)
     @UseGuards(AuthGuard, RoleGuard)
     @Patch('user/:wellId')

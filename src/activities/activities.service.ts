@@ -100,7 +100,7 @@ export class ActivitiesService {
 
         return customMessage(
             HttpStatus.OK,
-            `Muni`,
+            `Search activities lists`,
             {
                 muni:objectToArray(muni),
                 munSolic: objectToArray(munSolic),

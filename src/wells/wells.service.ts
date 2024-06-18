@@ -13,6 +13,7 @@ import { Sorting } from '../search/decorators/sortParams.decorator';
 import { Filtering } from '../search/decorators/filterParams.decorator';
 import { Pagination } from '../search/decorators/paginationParams.decorator';
 import { getOrder, getWhere } from '../search/helpers/queryHelper';
+import objectToArray from 'src/shared/utils/objectToArray';
 
 @Injectable()
 export class WellsService {
@@ -94,6 +95,28 @@ export class WellsService {
         }
     }
 
+    
+    async findUniqueCategories() {
+        const muni:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`muni`).distinct(true).getRawMany();
+        const supram:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"supram"`).distinct(true).getRawMany();        
+        const modUso:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"modUso"`).distinct(true).getRawMany();        
+        const finUso:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"finUso"`).distinct(true).getRawMany();        
+        const tipoReg:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"tipoReg"`).distinct(true).getRawMany();        
+        const situ:Array<Object> = await this.wellRepository.createQueryBuilder('wells').select(`"situ"`).distinct(true).getRawMany();        
+
+        return customMessage(
+            HttpStatus.OK,
+            `Search wells lists`,
+            {
+                muni:objectToArray(muni),
+                supram:objectToArray(supram),
+                modUso:objectToArray(modUso),
+                finUso:objectToArray(finUso),
+                tipoReg:objectToArray(tipoReg),
+                situ: objectToArray(situ),
+            }
+        )
+    }
 
     async updateUserOwnership(wellId: string, { userId, hasActiveUser }: UpdateUserOwnershipDto) {
 
