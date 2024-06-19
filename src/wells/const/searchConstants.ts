@@ -13,3 +13,20 @@ export const wellSearchConst = [
     'situ',
     'tipoReg'
 ]
+export const adminWellSearchConst = [
+    'supram',
+    'muni',
+    'ordinance',
+    'NE', 
+    'ND', 
+    'vaz',
+    'tCap',
+    'profPc',
+    'diaPcmm',
+    'modUso',
+    'finUso',
+    'situ',
+    'userId',
+    'hasActiveUser',
+    'tipoReg'
+]

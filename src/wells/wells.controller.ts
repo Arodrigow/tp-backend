@@ -12,7 +12,7 @@ import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/auth/enums/roles.enum';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
-import { wellSearchConst } from './const/searchConstants';
+import { adminWellSearchConst, wellSearchConst } from './const/searchConstants';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('siimasapi/wells')
@@ -115,8 +115,8 @@ export class WellsController {
     @UseGuards(AuthGuard, RoleGuard)
     async adminGetWells(
         @PaginationParams() paginationParams: Pagination,
-        @SortingParams(wellSearchConst) sort?: Sorting,
-        @FilteringParams(wellSearchConst)  filter?: Filtering
+        @SortingParams(adminWellSearchConst) sort?: Sorting,
+        @FilteringParams(adminWellSearchConst)  filter?: Filtering
     ):Promise<PaginatedResource<Partial<Wells>>>{
         return await this.wellService.adminSearchWells(paginationParams, sort, filter);
     }
