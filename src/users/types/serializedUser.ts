@@ -1,4 +1,5 @@
 import { Exclude } from "class-transformer";
+import { Role } from "src/auth/enums/roles.enum";
 
 export class SerializedUser {
 
@@ -8,6 +9,7 @@ export class SerializedUser {
     phone_number:string;
     deletedAt:Date;
     cpf:string;
+    role:Role;
 
     @Exclude()
     password:string;
