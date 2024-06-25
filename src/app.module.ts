@@ -8,6 +8,7 @@ import { WellsModule } from './wells/wells.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
 import { ActivitiesModule } from './activities/activities.module';
 import { AccessModule } from './access/access.module';
+import { ShapesModule } from './shapes/shapes.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AccessModule } from './access/access.module';
     MonitoringModule,
     ActivitiesModule,
     AccessModule,
+    ShapesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
