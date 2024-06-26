@@ -17,5 +17,6 @@ export class CreateWellDto {
     hasActiveUser?: boolean;
     tipoReg?: string;
     dataVenc?: Date;
+    dataInic?: Date;
     situ?:string;
 }

@@ -20,6 +20,7 @@ export class SerializedWell{
     userId: string;
     tipoReg: string;
     dataVenc: Date;
+    dataInic: Date;
     situ:string;
     updatedAt: Date;
     

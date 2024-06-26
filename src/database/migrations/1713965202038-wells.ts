@@ -83,6 +83,11 @@ export class Wells1713965202038 implements MigrationInterface {
                     isNullable: true
                 },
                 {
+                    name:'dataInic',
+                    type:'TIMESTAMP',
+                    isNullable: true
+                },
+                {
                     name: 'id',
                     type: 'uuid',
                     isPrimary: true,

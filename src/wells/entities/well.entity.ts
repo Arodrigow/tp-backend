@@ -104,6 +104,11 @@ export class Wells {
   })
   dataVenc: Date;  
 
+  @Column({
+    nullable: true
+  })
+  dataInic: Date;  
+
   @PrimaryGeneratedColumn('uuid')
   id: string = uuidv4();
 
