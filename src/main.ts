@@ -17,13 +17,7 @@ async function bootstrap() {
   );
 
   app.register(helmet);
-  app.enableCors(
-    {
-      origin: '*',
-      methods: 'GET,POST,OPTIONS',
-      allowedHeaders: 'Origin, Content-Type, Accept, Authorization',
-    }
-  );
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT || 3000);
 }
