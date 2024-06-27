@@ -21,7 +21,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:create": "cross-var ts-node node_modules/typeorm/cli.js migration:create ./src/database/migrations/$npm_config_name",
     "migrate": "ts-node node_modules/typeorm/cli.js migration:run -d src/shared/utils/datasource.ts",
-    "migration:down": "ts-node node_modules/typeorm/cli.js migration:revert -d src/shared/utils/datasource.ts"
+    "migrate:linux": "node --max_old_space_size=2048 -r ts-node/register node_modules/typeorm/cli.js migration:run -d src/shared/utils/datasource.ts",
+    "migration:down": "ts-node node_modules/typeorm/cli.js migration:revert -d src/shared/utils/datasource.ts",
+    "migration:down:linux": "node --max_old_space_size=2048 -r ts-node/register node_modules/typeorm/cli.js migration:revert -d src/shared/utils/datasource.ts"
+
   },
   "dependencies": {
     "@fastify/helmet": "^11.1.1",
