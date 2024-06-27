@@ -1,4 +1,4 @@
-import {loadConfig} from './shared/utils/config';
+import { loadConfig } from './shared/utils/config';
 loadConfig();
 
 import { NestFactory } from '@nestjs/core';
@@ -17,7 +17,13 @@ async function bootstrap() {
   );
 
   app.register(helmet);
-  app.enableCors();
+  app.enableCors(
+    {
+      origin: '*',
+      methods: 'GET,POST,OPTIONS',
+      allowedHeaders: 'Origin, Content-Type, Accept, Authorization',
+    }
+  );
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT || 3000);
 }
