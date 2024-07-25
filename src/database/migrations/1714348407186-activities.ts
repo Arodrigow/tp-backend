@@ -10,86 +10,99 @@ export class Activities1714348407186 implements MigrationInterface {
                 {
                     name:'processo',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'munSolic',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'codAtivPrim',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'riscoAr',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'riscoAgua',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'riscoSolo',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'riscoTotal',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'list',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'descAtivPrim',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'classe',
                     type:'INT',
-                    isNullable: true
+                    isNullable: true,
                 },
                 {
                     name:'fatLocRes',
                     type:'INT',
-                    isNullable: true
+                    isNullable: true,
                 },
                 {
                     name:'modLic',
                     type:'TEXT',
-                    isNullable: true
+                    default: "'Não consta'",
+                    isNullable:true
                 },
                 {
                     name:'faseLic',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'undAnalis',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {
                     name:'lat',
                     type:'NUMERIC(10, 8)',
-                    isNullable: true
+                    isNullable: true,
                 },
                 {
                     name:'long',
                     type:'NUMERIC(10, 8)',
-                    isNullable: true
+                    isNullable: true,
                 },
                 {
                     name:'muni',
                     type:'TEXT',
+                    default: "'Não consta'",
                     isNullable: true
                 },
                 {

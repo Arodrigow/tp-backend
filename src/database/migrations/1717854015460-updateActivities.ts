@@ -19,7 +19,22 @@ export class UpdateActivities1717854015460 implements MigrationInterface {
          await queryRunner.query(`UPDATE "activities" SET "riscoTotal" = 'Médio' WHERE "riscoTotal" = 'M'`)
          await queryRunner.query(`UPDATE "activities" SET "riscoTotal" = 'Pequeno' WHERE "riscoTotal" = 'P'`)
          await queryRunner.query(`UPDATE "activities" SET "riscoTotal" = 'Grande' WHERE "riscoTotal" = 'G'`)
-        
+         
+         
+         await queryRunner.query(`UPDATE "activities" SET "processo" = 'Não consta' WHERE "processo" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "munSolic" = 'Não consta' WHERE "munSolic" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "codAtivPrim" = 'Não consta' WHERE "codAtivPrim" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "riscoAr" = 'Não consta' WHERE "riscoAr" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "riscoAgua" = 'Não consta' WHERE "riscoAgua" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "riscoSolo" = 'Não consta' WHERE "riscoSolo" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "riscoTotal" = 'Não consta' WHERE "riscoTotal" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "list" = 'Não consta' WHERE "list" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "descAtivPrim" = 'Não consta' WHERE "descAtivPrim" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "modLic" = 'Não consta' WHERE "modLic" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "faseLic" = 'Não consta' WHERE "faseLic" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "undAnalis" = 'Não consta' WHERE "undAnalis" IS NULL`)
+         await queryRunner.query(`UPDATE "activities" SET "muni" = 'Não consta' WHERE "muni" IS NULL`)
+
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
