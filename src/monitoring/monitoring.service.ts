@@ -32,7 +32,8 @@ export class MonitoringService {
             newEntry.flow = flow;
             newEntry.level = level;
             newEntry.pumpTime = pumpTime;
-            newEntry.date = date;
+            newEntry.date = new Date(date);
+            newEntry.date.setTime(newEntry.date.getTime() + (12 * 60 * 60 * 1000))
             newEntry.well = well;
             await this.monitRepository.save(newEntry);
 
